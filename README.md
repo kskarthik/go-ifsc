@@ -2,6 +2,8 @@
 
 A simple tool to check & search IFSC codes of all Indian banks from your terminal ! 🤓💪
 
+⚡ Single binary, No dependencies, Works Offline ⚡
+
 ```bash
 This utility shows the bank details of given IFSC code
 
@@ -23,7 +25,7 @@ Tested with Go `>=1.19` & might work with Go versions `>=1.16` too.
 
 # Examples 😍
 
-Validate a IFSC code
+## Validate a IFSC code
 
 ```bash
 $ ifsc check ICIC0004530
@@ -46,7 +48,7 @@ UPI : yes
 SWIFT : ?
 ```
 
-Search for banks
+## Search for banks
 
 ```bash
 ./ifsc search "tidel park"
