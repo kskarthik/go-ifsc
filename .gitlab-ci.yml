@@ -4,7 +4,6 @@ pages:
   script:
     - wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv
     - sh build.sh
-    - mv bin/ public/
   artifacts:
     paths:
       - public
