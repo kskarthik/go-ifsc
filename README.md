@@ -15,6 +15,12 @@ This utility shows the bank details of given IFSC code
 	serve - starts the REST API server [TODO]
 ```
 
+# Download
+
+All binaries are built in gitlab ci for each commit.
+
+Links: 🐧 [Linux (x64)](https://kskarthik.gitlab.io/go-ifsc/ifsc) | 🪟 [Windows](https://kskarthik.gitlab.io/go-ifsc/ifsc.exe) | 🍎 [Mac](https://kskarthik.gitlab.io/go-ifsc/ifsc.dmg)
+
 # Build From Source 🛠️
 
 Tested with Go `>=1.19` & might work with Go versions `>=1.16` too.
@@ -51,7 +57,7 @@ SWIFT : ?
 ## Search for banks
 
 ```bash
-./ifsc search "tidel park"
+$ ./ifsc search "tidel park"
 BANK : Canara Bank
 IFSC : CNRB0002715
 BRANCH : TIDEL PARK, CHENNAI
@@ -231,4 +237,10 @@ All the code, except the `IFSC.csv`, file is licensed under `GPLv3`
 
 # TODO 📝
 
-Provide a REST API along with CLI for search & validation
+- [ ] Provide a REST API for search & validation
+- [ ] Improve the search logic
+- [ ] handle the search command param properly
+
+# Credits
+
+- Thanks to [Razorpay IFSC](https://github.com/razorpay/ifsc/releases) for the csv dump
