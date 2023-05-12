@@ -19,7 +19,7 @@ This utility shows the bank details of given IFSC code
 
 All binaries are built in gitlab ci for each commit.
 
-Links: 🐧 [Linux (x64)](https://kskarthik.gitlab.io/go-ifsc/ifsc) | 🪟 [Windows](https://kskarthik.gitlab.io/go-ifsc/ifsc.exe) | 🍎 [Mac](https://kskarthik.gitlab.io/go-ifsc/ifsc.dmg)
+Links: 🐧 [Linux (x64)](https://kskarthik.gitlab.io/go-ifsc/ifsc) | 🪟 [Windows](https://kskarthik.gitlab.io/go-ifsc/ifsc.exe) | 🍎 [Mac](https://kskarthik.gitlab.io/go-ifsc/ifsc-darwin)
 
 # Build From Source 🛠️
 
