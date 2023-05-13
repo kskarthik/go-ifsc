@@ -5,14 +5,22 @@ A simple tool to check & search IFSC codes of all Indian banks from your termina
 ⚡ Single binary, No dependencies, Works Offline ⚡
 
 ```bash
-This utility shows the bank details of given IFSC code
+This utility helps to search, validate IFSC codes of Indian banks
 
- USAGE: ifsc [COMMAND] [INPUT]
+Usage:
+  ifsc [command]
 
- COMMANDS:
-	check - checks the given IFSC code & return the bank details if valid
-	search - return results of banks based on keyword
-	serve - starts the REST API server [TODO]
+Available Commands:
+  check       Check whether a given IFSC code is valid
+  completion  Generate the autocompletion script for the specified shell
+  help        Help about any command
+  search      Fuzzy search for banks / IFSC codes
+
+Flags:
+  -h, --help     help for ifsc
+  -t, --toggle   Help message for toggle
+
+Use "ifsc [command] --help" for more information about a command.
 ```
 
 # Download
@@ -33,8 +41,8 @@ Tested with Go `>=1.19` & might work with Go versions `>=1.16` too.
 # after cloning  this repo, cd into it
 cd go-ifsc/
 
-# download the IFSC.csv
-wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv
+# download the IFSC.csv to cmd/
+wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv -P cmd/
 
 # build the binary, public/ will contain the built binaries
 bash build.sh

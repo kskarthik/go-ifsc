@@ -2,7 +2,7 @@ image: golang:1.19.9-alpine3.18
 
 pages:
   script:
-    - wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv
+    - wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv -P cmd/
     - sh build.sh
   artifacts:
     paths:
