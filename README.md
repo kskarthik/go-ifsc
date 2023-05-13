@@ -77,7 +77,6 @@ SWIFT : ?
 
 ```bash
 $ ifsc search tidel park
-kar@earth:~/my/projects/go-ifsc$ go run main.go search tidel park
 BANK : ICICI Bank
 IFSC : ICIC0007729
 BRANCH : CHENNAITIDEL PARK
