@@ -7,7 +7,7 @@ A simple tool to check & search IFSC codes of all Indian banks from your termina
 ```bash
 This utility shows the bank details of given IFSC code
 
- USAGE: ./ifsc [COMMAND] [INPUT]
+ USAGE: ifsc [COMMAND] [INPUT]
 
  COMMANDS:
 	check - checks the given IFSC code & return the bank details if valid
@@ -17,21 +17,32 @@ This utility shows the bank details of given IFSC code
 
 # Download
 
-All binaries are built in gitlab ci for each commit.
+All binaries are built on gitlab ci for each commit.
 
-Links: 🐧 [Linux (x64)](https://kskarthik.gitlab.io/go-ifsc/linux/ifsc) | 🪟 [Windows (x64)](https://kskarthik.gitlab.io/go-ifsc/win/ifsc.exe) | 🍎 [Mac (darwin x64)](https://kskarthik.gitlab.io/go-ifsc/darwin/ifsc)
+Links:
+
+- 🐧 [Linux (x64)](https://kskarthik.gitlab.io/go-ifsc/linux/ifsc)
+- 🪟 [Windows (x64)](https://kskarthik.gitlab.io/go-ifsc/win/ifsc.exe)
+- 🍎 [Mac (darwin x64)](https://kskarthik.gitlab.io/go-ifsc/darwin/ifsc)
 
 # Build From Source 🛠️
 
 Tested with Go `>=1.19` & might work with Go versions `>=1.16` too.
 
-1. Download the latest `IFSC.csv` file from https://github.com/razorpay/ifsc/releases into the cloned repository
+```bash
+# after cloning  this repo, cd into it
+cd go-ifsc/
 
-2. Run `go build -o ifsc main.go`
+# download the IFSC.csv
+wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv
+
+# build the binary, public/ will contain the built binaries
+bash build.sh
+```
 
 # Examples 😍
 
-## Validate a IFSC code
+### Validate a IFSC code
 
 ```bash
 $ ifsc check ICIC0004530
@@ -54,10 +65,10 @@ UPI : yes
 SWIFT : ?
 ```
 
-## Search for banks
+### Search for banks
 
 ```bash
-$ ./ifsc search "tidel park"
+$ ifsc search "tidel park"
 BANK : Canara Bank
 IFSC : CNRB0002715
 BRANCH : TIDEL PARK, CHENNAI
