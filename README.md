@@ -35,7 +35,6 @@ cd go-ifsc/
 
 # download the IFSC.csv
 wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv
-gzip IFSC.csv
 
 # build the binary, public/ will contain the built binaries
 bash build.sh
