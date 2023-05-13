@@ -86,7 +86,7 @@ func checkIfscCode(code string) ([]string, error) {
 /*Print a search result to stdout*/
 func printResult(record []string) {
 
-	for i := 0; i < len(record); i++ {
+	for i := range record {
 		var value string = record[i]
 		if record[i] == "true" {
 			value = "yes"
@@ -121,9 +121,9 @@ func searchIFSC(searchTerm string) ([][]string, error) {
 			log.Fatal(err)
 		}
 		// loop over all fields of a record
-		for i := 0; i < len(record); i++ {
-			// if the search term matches any of the fields of the record
+		for i := range record {
 			// convert the strings to lower case & compare
+			// if the search term matches any of the fields of the record
 			if strings.Contains(strings.ToLower(record[i]), strings.ToLower(searchTerm)) {
 				// if found, append the record to the searchResults slice
 				s := append(searchResults, record)
