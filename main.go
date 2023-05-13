@@ -5,8 +5,6 @@ License: GPLv3
 package main
 
 import (
-	"bytes"
-	"compress/gzip"
 	_ "embed"
 	"encoding/csv"
 	"errors"
@@ -19,8 +17,8 @@ import (
 
 // embed the IFSC.csv file into the binary
 //
-//go:embed IFSC.csv.gz
-var ifscGz []byte
+//go:embed IFSC.csv
+var ifscCodes string
 
 // IFSC fields
 var fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
@@ -28,8 +26,6 @@ var fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE",
 var help = map[string]string{
 	"arg": "No arguments specified",
 	"all": "This utility shows the bank details of given IFSC code\n\n USAGE: ./ifsc [COMMAND] [INPUT]  \n\n COMMANDS: \n\tcheck - checks the given IFSC code & return the bank details if valid\n\tsearch - return results of banks based on keyword\n\tserve - starts the REST API server [TODO]"}
-
-var ifscCodes io.Reader = bytesToIO()
 
 func main() {
 	// parse the cli arguments
@@ -63,19 +59,12 @@ func main() {
 	}
 }
 
-// convert the embedded gzip's []byte to io.Reader format which the csv reader supports
-func bytesToIO() io.Reader { 
-	ioReader := bytes.NewReader(ifscGz)
-	r, _ := gzip.NewReader(ioReader)
-	defer r.Close()
-	return r
-}
 /* checks whether a given IFSC code is valid, retuns a slice
 TODO:optimize the speed of validation, currenly using the linear approach
 */
 func checkIfscCode(code string) ([]string, error) {
 	// read the csv
-	r := csv.NewReader(ifscCodes)
+	r := csv.NewReader(strings.NewReader(ifscCodes))
 	var e error = errors.New("Record not found")
 	// loop over the csv fields
 	for {
@@ -120,7 +109,7 @@ for more than one word. eg "main road"
 */
 func searchIFSC(searchTerm string) ([][]string, error) {
 	// read the csv
-	r := csv.NewReader(ifscCodes)
+	r := csv.NewReader(strings.NewReader(ifscCodes))
 	searchResults := [][]string{}
 	// loop over the csv fields
 	for {
