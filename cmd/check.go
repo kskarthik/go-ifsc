@@ -7,7 +7,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +23,7 @@ var checkCmd = &cobra.Command{
 			fmt.Println("Invalid IFSC Code")
 			os.Exit(1)
 		}
-		r, err := CheckIfSC(args)
+		r, err := CheckIfSC(args[0])
 		if err == nil {
 		PrintResult(r)
 		} else {

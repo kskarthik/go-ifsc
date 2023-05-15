@@ -2,7 +2,7 @@
 
 A simple tool to check & search IFSC codes of all Indian banks from your terminal ! 🤓💪
 
-⚡ Single binary, No dependencies, Works Offline ⚡
+⚡ Single binary | Works Offline ⚡
 
 ```bash
 This utility helps to search, validate IFSC codes of Indian banks
@@ -15,10 +15,10 @@ Available Commands:
   completion  Generate the autocompletion script for the specified shell
   help        Help about any command
   search      Fuzzy search for banks / IFSC codes
+  server      Launch the REST API server
 
 Flags:
-  -h, --help     help for ifsc
-  -t, --toggle   Help message for toggle
+  -h, --help   help for ifsc
 
 Use "ifsc [command] --help" for more information about a command.
 ```
@@ -131,15 +131,75 @@ SWIFT : ?
 3 results
 ```
 
+### REST API
+
+`ifsc server` command will launch the web server at `localhost:9000`
+
+The validation API is similar to Razorpay's API
+
+#### GET `/:ifsc`
+
+Below is the response of `/YESB0DNB002`
+
+If the code is invalid or no result was found, Server responds with 404
+
+```json
+{
+  "BANK": "Delhi Nagrik Sehkari Bank",
+  "IFSC": "YESB0DNB002",
+  "BRANCH": "Delhi Nagrik Sehkari Bank IMPS",
+  "CENTRE": "DELHI",
+  "DISTRICT": "DELHI",
+  "STATE": "MAHARASHTRA",
+  "ADDRESS": "720, NEAR GHANTAGHAR, SUBZI MANDI, DELHI - 110007",
+  "CONTACT": "+919560344685",
+  "IMPS": true,
+  "RTGS": true,
+  "CITY": "MUMBAI",
+  "ISO3166": "IN-MH",
+  "NEFT": true,
+  "MICR": "110196002",
+  "UPI": true,
+  "SWIFT": ""
+}
+```
+
+#### `/search/:search_term`
+
+Example: `/search/king koti`
+
+```json
+[
+  {
+    "BANK": "Cosmos Co-operative Bank",
+    "IFSC": "COSB0000030",
+    "BRANCH": "HYDERABAD",
+    "CENTRE": "HYDERABAD",
+    "DISTRICT": "HYDERABAD",
+    "STATE": "ANDHRA PRADESH",
+    "ADDRESS": "3-5-798, PRATHIMA SCHALASS, NEW NO.248, STREET NO.8, BASHEERBAUG HYDERGUDA, KING KOTI ROAD, HYDERABAD- 500 029",
+    "CONTACT": "+914023231705",
+    "IMPS": true,
+    "RTGS": true,
+    "CITY": "HYDERABAD",
+    "ISO3166": "IN-AP",
+    "NEFT": true,
+    "MICR": "500164001",
+    "UPI": true,
+    "SWIFT": ""
+  }
+]
+```
+
 # License ⚖️
 
 All the code, except the `IFSC.csv`, file is licensed under `GPLv3`
 
 # TODO 📝
 
-- [ ] Provide a REST API for search & validation
-- [ ] Improve the search logic
-- [ ] handle the search command param properly
+- [x] Provide a REST API for search & validation
+- [x] handle the search command param properly
+- [ ] Improve the check & search logic
 
 # Credits
 

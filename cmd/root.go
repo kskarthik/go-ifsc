@@ -46,7 +46,7 @@ func init() {
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 
@@ -61,7 +61,7 @@ var Fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE",
 /* checks whether a given IFSC code is valid, retuns a slice
 TODO:optimize the speed of validation, currenly using the linear approach
 */
-func CheckIfSC(code []string) ([]string, error) {
+func CheckIfSC(code string) ([]string, error) {
 	// read the csv
 	r := csv.NewReader(strings.NewReader(IFSCCodes))
 	var e error = errors.New("Record not found")
@@ -75,11 +75,11 @@ func CheckIfSC(code []string) ([]string, error) {
 			log.Fatal(err)
 		}
 		// if code matches the record, return the result
-		if code[0] == record[1] {
+		if code == record[1] {
 			return record, nil
 		}
 	}
-	return code, e
+	return []string{}, e
 }
 
 /*Print a search result to stdout*/
