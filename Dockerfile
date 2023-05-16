@@ -1,6 +1,14 @@
-FROM debian:unstable-slim
+FROM golang:1.19-alpine as build
 
-COPY ./public/linux/ifsc /usr/local/bin/
+RUN mkdir /ifsc/
+
+COPY . /ifsc/
+
+RUN cd /ifsc/ && ls && sh build.sh 
+
+FROM alpine:latest
+
+COPY --from=build /ifsc/public/linux/* /usr/local/bin/
 
 ENTRYPOINT [ "ifsc", "server" ]
 
