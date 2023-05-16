@@ -31,8 +31,7 @@ type Body struct {
 	NEFT     bool
 	MICR     string
 	UPI      bool
-	// TODO: make this type string or nil
-	SWIFT string
+	SWIFT *string
 }
 
 // serverCmd represents the server command
@@ -79,8 +78,12 @@ func ifscStruct(r []string) Body {
 	body.NEFT = toBool(r[12])
 	body.MICR = r[13]
 	body.UPI = toBool(r[14])
-	body.SWIFT = r[15]
-
+	// return null of swift is empty
+	if r[15] == "" {
+		body.SWIFT = nil
+	} else {
+		body.SWIFT = &r[15]
+	}
 	return body
 }
 
