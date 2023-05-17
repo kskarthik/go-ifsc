@@ -25,7 +25,7 @@ Use "ifsc [command] --help" for more information about a command.
 
 # Download
 
-All binaries are built on gitlab ci for each commit.
+There is no release ATM. All binaries are built on gitlab ci on each commit. You can download from the links below
 
 Links:
 
@@ -133,11 +133,11 @@ SWIFT : ?
 
 ### REST API
 
-`ifsc server` command will launch the web server at `localhost:9000`
-
-The validation API is similar to Razorpay's API
+`ifsc server` command will launch the web server at `localhost:9000`. The port number can be customized with `--port` flag
 
 #### GET `/:ifsc`
+
+This validation endpoint is same as [Razorpay's API](https://github.com/razorpay/ifsc/wiki/API)
 
 Below is the response of `/YESB0DNB002`
 
@@ -160,11 +160,13 @@ If the code is invalid or no result was found, Server responds with 404
   "NEFT": true,
   "MICR": "110196002",
   "UPI": true,
-  "SWIFT": ""
+  "SWIFT": null
 }
 ```
 
-#### `/search/:search_term`
+#### GET `/search/:search_term`
+
+This API searches the data set for given `search_term` & returns an array of objects which match the search term
 
 Example: `/search/king koti`
 
@@ -201,6 +203,6 @@ All the code, except the `IFSC.csv`, file is licensed under `GPLv3`
 - [x] handle the search command param properly
 - [ ] Improve the check & search logic
 
-# Credits
+# Credits 🤝
 
-- Thanks to [Razorpay IFSC](https://github.com/razorpay/ifsc/releases) for the csv dump
+- Thanks to [Razorpay IFSC ](https://github.com/razorpay/ifsc/releases) repository for the csv dump

@@ -8,4 +8,9 @@ pages:
     paths:
       - public
   only:
-    - master
+    refs:
+      - branches
+    changes:
+      - Dockerfile
+      - cmd/**/*.go
+      - ./*.{sh,go}
