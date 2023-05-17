@@ -1,6 +1,8 @@
-# go-ifsc 🚀
+# ifsc 🚀
 
-A simple tool to check & search IFSC codes of all Indian banks from your terminal ! 🤓💪
+A simple tool to check & search IFSC codes of all Indian banks from the comfort of your terminal 🤓💪
+
+Also includes a REST API server 💥
 
 ⚡ Single binary | Works Offline ⚡
 
@@ -35,6 +37,8 @@ Links:
 
 # Build From Source 🛠️
 
+### Linux
+
 Tested with Go `>=1.19` & might work with Go versions `>=1.16` too.
 
 ```bash
@@ -48,7 +52,7 @@ wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv -P cmd/
 bash build.sh
 ```
 
-# Examples 😍
+# CLI Examples 😍
 
 ### Validate a IFSC code
 
@@ -131,7 +135,7 @@ SWIFT : ?
 3 results
 ```
 
-### REST API
+### REST API Examples
 
 `ifsc server` command will launch the web server at `localhost:9000`. The port number can be customized with `--port` flag
 
