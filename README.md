@@ -199,7 +199,7 @@ Example: `/search/king koti`
 
 # License ⚖️
 
-All the code, except the `IFSC.csv`, file is licensed under `GPLv3`
+All the code, except the `IFSC.csv` file dump, is licensed under `GPLv3` & server code is `AGPLv3` license
 
 # TODO 📝
 

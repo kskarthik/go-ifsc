@@ -1,6 +1,6 @@
 /*
 Copyright © 2023 Sai Karthik <kskarthik@disroot.org>
-License: GPLv3
+License: AGPLv3 (https://www.gnu.org/licenses/agpl-3.0.txt)
 */
 package cmd
 
