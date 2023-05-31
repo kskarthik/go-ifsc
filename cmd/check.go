@@ -6,8 +6,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // checkCmd represents the check command
@@ -25,7 +25,7 @@ var checkCmd = &cobra.Command{
 		}
 		r, err := CheckIfSC(args[0])
 		if err == nil {
-		PrintResult(r)
+			PrintResult(r)
 		} else {
 			fmt.Println(err)
 			os.Exit(1)

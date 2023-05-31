@@ -5,24 +5,20 @@ License: GPLv3
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	_ "embed"
 	"encoding/csv"
 	"errors"
 	"fmt"
-	"io"
-	"log"
+	"github.com/spf13/cobra"
 	"os"
 	"strings"
 )
-
-
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "ifsc",
 	Short: "Search & Validate IFSC Codes",
-	Long: `This utility helps to search, validate IFSC codes of Indian banks`,
+	Long:  `This utility helps to search, validate IFSC codes of Indian banks`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -37,6 +33,17 @@ func Execute() {
 	}
 }
 
+// embed the IFSC.csv file into the binary
+//
+//go:embed IFSC.csv
+var IFSCCodes string
+
+// the parsed csv
+var CsvSlice [][]string
+
+// the column names of the csv
+var Fields = []string{}
+
 func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -47,33 +54,28 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	// read the csv
+	r := csv.NewReader(strings.NewReader(IFSCCodes))
+	// reads the string as a slice
+	slice, readErr := r.ReadAll()
+	if readErr != nil {
+		return
+	}
+	CsvSlice = slice
+	Fields = CsvSlice[0]
 }
 
+/*
+	checks whether a given IFSC code is valid, retuns a slice
 
-// embed the IFSC.csv file into the binary
-//
-//go:embed IFSC.csv
-var IFSCCodes string
-
-// IFSC fields
-var Fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
-
-/* checks whether a given IFSC code is valid, retuns a slice
 TODO:optimize the speed of validation, currenly using the linear approach
 */
 func CheckIfSC(code string) ([]string, error) {
-	// read the csv
-	r := csv.NewReader(strings.NewReader(IFSCCodes))
+	// custom error
 	var e error = errors.New("Record not found")
 	// loop over the csv fields
-	for {
-		record, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
+	for _, record := range CsvSlice {
 		// if code matches the record, return the result
 		if code == record[1] {
 			return record, nil
@@ -94,31 +96,24 @@ func PrintResult(record []string) {
 			value = "no"
 		}
 		if record[i] == "" {
-			value = "?"
+			value = "N/A"
 		}
 		fmt.Println(Fields[i], ":", value)
 	}
 }
 
-/* search the csv records which include the given search term
+/*
+	search the csv records which include the given search term
+
 TODO: optimize the search speed. Currenly using the linear search
-Also, improve the handling of search params, The current accepts the 
+Also, improve the handling of search params, The current accepts the
 search param via cli argument & we the term has to be wrapped in quotes
 for more than one word. eg "main road"
 */
 func SearchIFSC(searchTerm string) ([][]string, error) {
-	// read the csv
-	r := csv.NewReader(strings.NewReader(IFSCCodes))
 	searchResults := [][]string{}
 	// loop over the csv fields
-	for {
-		record, err := r.Read()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			log.Fatal(err)
-		}
+	for _, record := range CsvSlice {
 		// loop over all fields of a record
 		for i := range record {
 			// convert the strings to lower case & compare
