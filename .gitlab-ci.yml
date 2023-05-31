@@ -1,6 +1,23 @@
 image: golang:1.19-buster
 
+stages:
+  - build
+  - deploy
+
+services:
+  - docker:20.10.19-dind
+
+docker image:
+  image: docker:20.10.19
+  stage: build
+  script:
+    # build the docker image & push to the dockerhub
+    - docker login -u kskarthik -p $DOCKERHUB_TOKEN
+    - docker build -t kskarthik/ifsc:latest .
+    - docker push digitalfreedom/gkapp:latest
+
 pages:
+  stage: deploy
   script:
     - wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv -P cmd/
     - sh build.sh
