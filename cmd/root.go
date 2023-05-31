@@ -62,6 +62,7 @@ func init() {
 	if readErr != nil {
 		return
 	}
+	// assign the csv slice & fields to respective global variables
 	CsvSlice = slice
 	Fields = CsvSlice[0]
 }
