@@ -4,7 +4,11 @@ RUN mkdir /ifsc/
 
 COPY . /ifsc/
 
-RUN cd /ifsc/ && ls && sh build.sh 
+ARG IFSC_VERSION=v2.0.12
+
+RUN cd /ifsc/ &&\
+		wget https://github.com/razorpay/ifsc/releases/download/$IFSC_VERSION/IFSC.csv -P cmd/ &&\
+		sh build.sh
 
 FROM alpine:latest
 
