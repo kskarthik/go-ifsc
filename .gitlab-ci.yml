@@ -14,7 +14,7 @@ docker image:
     # build the docker image & push to the dockerhub
     - docker login -u kskarthik -p $DOCKERHUB_TOKEN
     - docker build -t kskarthik/ifsc:latest .
-    - docker push digitalfreedom/gkapp:latest
+    - docker push kskarthik/ifsc:latest
 
 pages:
   stage: deploy
