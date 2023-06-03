@@ -25,7 +25,7 @@ var searchCmd = &cobra.Command{
 		// print the search results if there are any, to stdout
 		searchResults, e := SearchIFSC(searchString)
 		if e == nil && len(searchResults) > 0 {
-			for i := range searchResults{
+			for i := range searchResults {
 				PrintResult(searchResults[i])
 				fmt.Println("----------------------")
 			}

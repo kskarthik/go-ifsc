@@ -67,11 +67,9 @@ func init() {
 	Fields = CsvSlice[0]
 }
 
-/*
-	checks whether a given IFSC code is valid, retuns a slice
-
-TODO:optimize the speed of validation, currenly using the linear approach
-*/
+// checks whether a given IFSC code is valid, retuns a slice
+//
+// TODO: optimize the speed of validation, currenly using the linear approach
 func CheckIfSC(code string) ([]string, error) {
 	// custom error
 	var e error = errors.New("Record not found")
@@ -104,7 +102,7 @@ func PrintResult(record []string) {
 }
 
 /*
-	search the csv records which include the given search term
+search the csv records which include the given search term
 
 TODO: optimize the search speed. Currenly using the linear search
 Also, improve the handling of search params, The current accepts the
@@ -113,13 +111,19 @@ for more than one word. eg "main road"
 */
 func SearchIFSC(searchTerm string) ([][]string, error) {
 	searchResults := [][]string{}
+	// trim the white spaces of the searchTerm if any
+	keyWord := strings.Trim(searchTerm, " ")
 	// loop over the csv fields
 	for _, record := range CsvSlice {
 		// loop over all fields of a record
 		for i := range record {
-			// convert the strings to lower case & compare
+			// if exact word match is found
+			if keyWord == record[i] {
+				searchResults = append(searchResults, record)
+				break
+			}
 			// if the search term matches any of the fields of the record
-			if strings.Contains(strings.ToLower(record[i]), strings.ToLower(searchTerm)) {
+			if strings.Contains(strings.ToLower(record[i]), strings.ToLower(keyWord)) {
 				// if found, append the record to the searchResults slice
 				s := append(searchResults, record)
 				searchResults = s
