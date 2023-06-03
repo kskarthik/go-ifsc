@@ -67,20 +67,24 @@ func init() {
 	Fields = CsvSlice[0]
 }
 
-// checks whether a given IFSC code is valid, retuns a slice
-//
-// TODO: optimize the speed of validation, currenly using the linear approach
+/*
+checks whether a given IFSC code is valid, retuns a slice
+
+TODO: optimize the speed of validation, currenly using the linear approach
+*/
 func CheckIfSC(code string) ([]string, error) {
 	// custom error
 	var e error = errors.New("Record not found")
+	// trim the white spaces for param
+	c := strings.TrimSpace(code)
 	// loop over the csv fields
 	for _, record := range CsvSlice {
 		// if code matches the record, return the result
-		if code == record[1] {
+		if c == record[1] {
 			return record, nil
 		}
 	}
-	return []string{}, e
+	return []string{code}, e
 }
 
 /*Print a search result to stdout*/
@@ -112,8 +116,9 @@ for more than one word. eg "main road"
 func SearchIFSC(searchTerm string) ([][]string, error) {
 	searchResults := [][]string{}
 	// trim the white spaces of the searchTerm if any
-	keyWord := strings.Trim(searchTerm, " ")
+	keyWord := strings.TrimSpace(searchTerm)
 	// loop over the csv fields
+
 	for _, record := range CsvSlice {
 		// loop over all fields of a record
 		for i := range record {
