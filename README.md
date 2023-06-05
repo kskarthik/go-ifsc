@@ -29,11 +29,33 @@ Use "ifsc [command] --help" for more information about a command.
 
 There is no release ATM. All binaries are built on gitlab ci on each commit. You can download from the links below
 
-Links:
+## Desktop/Server
 
 - 🐧 [Linux (x64)](https://kskarthik.gitlab.io/go-ifsc/linux/ifsc)
 - 🪟 [Windows (x64)](https://kskarthik.gitlab.io/go-ifsc/win/ifsc.exe)
 - 🍎 [Mac (darwin x64)](https://kskarthik.gitlab.io/go-ifsc/darwin/ifsc)
+
+## Docker
+
+The docker image is built for each commit & uploaded to docker hub
+
+Docker hub: https://hub.docker.com/r/kskarthik/ifsc
+
+```sh
+
+$ docker pull kskarthik/ifsc:latest
+
+```
+
+Configure the docker compose file. You can override the default entrypoint & port
+
+```yaml
+ifsc-server:
+  image: kskarthik/ifsc:latest
+  entrypoint: ["ifsc", "server", "--port", "3000"]
+  expose:
+    - "3000"
+```
 
 # Build From Source 🛠️
 
@@ -74,7 +96,7 @@ ISO3166 : IN-AP
 NEFT : yes
 MICR : 533229007
 UPI : yes
-SWIFT : ?
+SWIFT : N/A
 ```
 
 ### Search for banks
@@ -96,7 +118,7 @@ ISO3166 : IN-TN
 NEFT : yes
 MICR : 600229167
 UPI : yes
-SWIFT : ?
+SWIFT : N/A
 ----------------------
 BANK : Karur Vysya Bank
 IFSC : KVBL0001901
@@ -111,9 +133,9 @@ RTGS : yes
 CITY : CHENNAI
 ISO3166 : IN-TN
 NEFT : yes
-MICR : ?
+MICR : N/A
 UPI : yes
-SWIFT : ?
+SWIFT : N/A
 ----------------------
 BANK : Karur Vysya Bank
 IFSC : KVBL0001260
@@ -122,7 +144,7 @@ CENTRE : CHENNAI
 DISTRICT : CHENNAI
 STATE : MAHARASHTRA
 ADDRESS : D-6th FLOOR, D NORTH BLOCK, TIDEL PARK, TARAMANI
-CONTACT : ?
+CONTACT : N/A
 IMPS : yes
 RTGS : yes
 CITY : MUMBAI
@@ -130,7 +152,7 @@ ISO3166 : IN-MH
 NEFT : no
 MICR : 600053056
 UPI : yes
-SWIFT : ?
+SWIFT : N/A
 ----------------------
 3 results
 ```

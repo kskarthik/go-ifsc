@@ -130,8 +130,7 @@ func SearchIFSC(searchTerm string) ([][]string, error) {
 			// if the search term matches any of the fields of the record
 			if strings.Contains(strings.ToLower(record[i]), strings.ToLower(keyWord)) {
 				// if found, append the record to the searchResults slice
-				s := append(searchResults, record)
-				searchResults = s
+				searchResults = append(searchResults, record)
 				break
 			}
 		}
