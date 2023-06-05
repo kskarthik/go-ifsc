@@ -42,9 +42,7 @@ The docker image is built for each commit & uploaded to docker hub
 Docker hub: https://hub.docker.com/r/kskarthik/ifsc
 
 ```sh
-
 $ docker pull kskarthik/ifsc:latest
-
 ```
 
 Configure the docker compose file. You can override the default entrypoint & port
