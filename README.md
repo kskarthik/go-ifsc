@@ -47,12 +47,12 @@ $ docker pull kskarthik/ifsc:latest
 
 Configure the docker compose file. You can override the default entrypoint & port
 
-````yaml
+```yaml
 ifsc-server:
   image: kskarthik/ifsc:latest
   entrypoint: ["~/ifsc", "server", "--port", "3000"]
   expose: - "3000"
-  ```
+```
 
 # Build From Source 🛠️
 
@@ -69,7 +69,7 @@ wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv -P cmd/
 
 # build the binary, public/ will contain the built binaries
 bash build.sh
-````
+```
 
 # CLI Examples 😍
 
