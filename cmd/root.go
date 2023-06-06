@@ -67,59 +67,85 @@ func init() {
 	Fields = CsvSlice[0]
 }
 
-/*
-checks whether a given IFSC code is valid, retuns a slice
-
-TODO: optimize the speed of validation, currenly using the linear approach
-*/
+// checks whether a given IFSC code is valid, retuns a slice
 func CheckIfSC(code string) ([]string, error) {
 	// custom error
 	var e error = errors.New("Record not found")
 	// trim the white spaces for param
-	c := strings.TrimSpace(code)
-	// loop over the csv fields
-	for _, record := range CsvSlice {
-		// if code matches the record, return the result
-		if c == record[1] {
-			return record, nil
-		}
+	ifscCode := strings.TrimSpace(code)
+	// create a channel
+	c := make(chan []string)
+	// create go routines to concurrenly search for
+	// given input in different ranges of CsvSlice
+	go checkSlice(ifscCode, CsvSlice[1:50000], c)
+	go checkSlice(ifscCode, CsvSlice[50000:100000], c)
+	go checkSlice(ifscCode, CsvSlice[100000:], c)
+	// assign goroutine results to three variables
+	r1, r2, r3 := <-c, <-c, <-c
+	// check each result & return the one which has the value
+	if len(r1) != 0 {
+		return r1, nil
+	}
+
+	if len(r2) != 0 {
+		return r2, nil
+	}
+
+	if len(r3) != 0 {
+		return r3, nil
 	}
 	return []string{code}, e
 }
 
-/*Print a search result to stdout*/
-func PrintResult(record []string) {
-
-	for i := range record {
-		var value string = record[i]
-		if record[i] == "true" {
-			value = "yes"
+// loop over the csv fields & return the matching result to channel
+func checkSlice(input string, slice [][]string, c chan []string) {
+	var result []string
+	for _, record := range slice {
+		// if code matches the record, return the result
+		if input == record[1] {
+			result = record
 		}
-		if record[i] == "false" {
-			value = "no"
-		}
-		if record[i] == "" {
-			value = "N/A"
-		}
-		fmt.Println(Fields[i], ":", value)
 	}
+	c <- result
 }
 
-/*
-search the csv records which include the given search term
-
-TODO: optimize the search speed. Currenly using the linear search
-Also, improve the handling of search params, The current accepts the
-search param via cli argument & we the term has to be wrapped in quotes
-for more than one word. eg "main road"
-*/
+// search the csv records which include the given search term
 func SearchIFSC(searchTerm string) ([][]string, error) {
+	c := make(chan [][]string)
+	// trim the white spaces of the searchTerm if any
+	keyWord := strings.TrimSpace(searchTerm)
+	// create go routines to concurrenly search for
+	// given input in different ranges of CsvSlice
+	go searchSlice(keyWord, CsvSlice[1:50000], c)
+	go searchSlice(keyWord, CsvSlice[50000:100000], c)
+	go searchSlice(keyWord, CsvSlice[100000:], c)
+	// assign goroutine results to three variables
+	r1, r2, r3 := <-c, <-c, <-c
+	// this var is used as return value
+	var result [][]string
+	// loop over all goroutine results and append to final result slice
+	for _, s := range r1 {
+		r := append(result, s)
+		result = r
+	}
+	for _, s := range r2 {
+		r := append(result, s)
+		result = r
+	}
+	for _, s := range r3 {
+		r := append(result, s)
+		result = r
+	}
+	return result, nil
+}
+
+// this function is used as a goroutine
+func searchSlice(searchTerm string, slice [][]string, c chan [][]string) {
 	searchResults := [][]string{}
 	// trim the white spaces of the searchTerm if any
 	keyWord := strings.TrimSpace(searchTerm)
 	// loop over the csv fields
-
-	for _, record := range CsvSlice {
+	for _, record := range slice {
 		// loop over all fields of a record
 		for i := range record {
 			// if exact word match is found
@@ -135,5 +161,23 @@ func SearchIFSC(searchTerm string) ([][]string, error) {
 			}
 		}
 	}
-	return searchResults, nil
+	c <- searchResults
+}
+
+// format the provided arg and print to stdout
+func PrintResult(record []string) {
+
+	for i := range record {
+		var value string = record[i]
+		if record[i] == "true" {
+			value = "yes"
+		}
+		if record[i] == "false" {
+			value = "no"
+		}
+		if record[i] == "" {
+			value = "N/A"
+		}
+		fmt.Println(Fields[i], ":", value)
+	}
 }

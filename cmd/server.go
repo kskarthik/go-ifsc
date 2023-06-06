@@ -31,7 +31,7 @@ type Body struct {
 	NEFT     bool
 	MICR     string
 	UPI      bool
-	SWIFT *string
+	SWIFT    *string
 }
 
 // serverCmd represents the server command
