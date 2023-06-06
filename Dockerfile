@@ -13,13 +13,13 @@ RUN cd /ifsc/ &&\
 FROM alpine:latest
 
 # create a non-root user to run the app
-RUN adduser --disabled-password ifsc-usr
+RUN adduser --no-create-home --disabled-password ifsc-usr
 
 # switch to non-root user
 USER ifsc-usr
 
-COPY --from=build /ifsc/public/linux/* ~/
+COPY --from=build /ifsc/public/linux/* /usr/local/bin/
 
-ENTRYPOINT [ "~/ifsc", "server" ]
+ENTRYPOINT [ "ifsc", "server" ]
 
 EXPOSE 9000

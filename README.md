@@ -50,8 +50,9 @@ Configure the docker compose file. You can override the default entrypoint & por
 ```yaml
 ifsc-server:
   image: kskarthik/ifsc:latest
-  entrypoint: ["~/ifsc", "server", "--port", "3000"]
-  expose: - "3000"
+  entrypoint: ["ifsc", "server", "--port", "3000"]
+  expose:
+    - "3000"
 ```
 
 # Build From Source 🛠️
