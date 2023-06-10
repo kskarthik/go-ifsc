@@ -5,7 +5,7 @@ stages:
   - deploy
 
 variables:
-  IFSC_VERSION: v2.0.12
+  IFSC_VERSION: v2.0.13
 
 services:
   - docker:20.10.19-dind

@@ -140,10 +140,8 @@ func SearchIFSC(searchTerm string) ([][]string, error) {
 }
 
 // this function is used as a goroutine
-func searchSlice(searchTerm string, slice [][]string, c chan [][]string) {
+func searchSlice(keyWord string, slice [][]string, c chan [][]string) {
 	searchResults := [][]string{}
-	// trim the white spaces of the searchTerm if any
-	keyWord := strings.TrimSpace(searchTerm)
 	// loop over the csv fields
 	for _, record := range slice {
 		// loop over all fields of a record
