@@ -25,6 +25,24 @@ Flags:
 Use "ifsc [command] --help" for more information about a command.
 ```
 
+# Demo
+
+get bank details for an IFSC Code
+
+```sh
+curl http://insomnia247.nl:5100/YESB0DNB002
+
+{"BANK":"Delhi Nagrik Sehkari Bank","IFSC":"YESB0DNB002","BRANCH":"Delhi Nagrik Sehkari Bank IMPS","CENTRE":"DELHI","DISTRICT":"DELHI","STATE":"MAHARASHTRA","ADDRESS":"720, NEAR GHANTAGHAR, SUBZI MANDI, DELHI - 110007","CONTACT":"+919560344685","IMPS":true,"RTGS":true,"CITY":"MUMBAI","ISO3166":"IN-MH","NEFT":true,"MICR":"110196002","UPI":true,"SWIFT":null}
+```
+
+search for banks in an area
+
+```sh
+curl http://insomnia247.nl:5100/search/hitech city
+
+[{"BANK":"Bandhan Bank","IFSC":"BDBL0002291","BRANCH":"KAVURI HILLS BRANCH HYDERABAD","CENTRE":"HYDERABAD","DISTRICT":"HYDERABAD","STATE":"TELANGANA","ADDRESS":"2-44 2,MADHAPUR PRIDE,GUTTALA BEGUMPET,MADHAPUR,HITECH CITY MAIN ROAD,GROUND FLOOR,MADHAPUR POLICE STATION -500081,TELANGANA","CONTACT":"+913366090909","IMPS":true,"RTGS":true,"CITY":"HYDERABAD","ISO3166":"IN-TG","NEFT":true,"MICR":"500750012","UPI":true,"SWIFT":null},{"BANK":"Central Bank of India","IFSC":"CBIN0283164","BRANCH":"HITECH AGRICULTURAL FINANCE BRANCH","CENTRE":"BHOPAL","DISTRICT":"BHOPAL","STATE":"MADHYA PRADESH","ADDRESS":"9, ARERA HILL, JAIL ROAD, BHOPAL, DIST- BHOPAL, MADHYA PRADESH-462011","CONTACT":"+912222612008","IMPS":true,"RTGS":true,"CITY":"BHOPAL","ISO3166":"IN-MP","NEFT":true,"MICR":"462016022","UPI":true,"SWIFT":null},
+```
+
 # Download
 
 There is no release ATM. All binaries are built on gitlab ci on each commit. You can download from the links below
