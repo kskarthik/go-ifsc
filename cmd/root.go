@@ -44,6 +44,9 @@ var CsvSlice [][]string
 // the column names of the csv
 var Fields = []string{}
 
+// ifsc codes as a map
+var IFSCMap = make(map[string][]string)
+
 func init() {
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -65,10 +68,28 @@ func init() {
 	// assign the csv slice & fields to respective global variables
 	CsvSlice = slice
 	Fields = CsvSlice[0]
+	// create a map having ifsc code as key and of value slice
+	for _, v := range CsvSlice[1:] {
+		IFSCMap[v[1]] = v
+	}
 }
 
 // checks whether a given IFSC code is valid, retuns a slice
 func CheckIfSC(code string) ([]string, error) {
+	// custom error
+	var e error = errors.New("Record not found")
+	// trim the white spaces for param
+	c := strings.TrimSpace(code)
+	// if the key exists in the map, return it's value
+	// else throw err
+	val, exists := IFSCMap[c]
+	if exists {
+		return val, nil
+	}
+	return []string{code}, e
+}
+
+/* func CheckIfSC(code string) ([]string, error) {
 	// custom error
 	var e error = errors.New("Record not found")
 	// trim the white spaces for param
@@ -95,10 +116,10 @@ func CheckIfSC(code string) ([]string, error) {
 		return r3, nil
 	}
 	return []string{code}, e
-}
+} */
 
 // loop over the csv fields & return the matching result to channel
-func checkSlice(input string, slice [][]string, c chan []string) {
+/* func checkSlice(input string, slice [][]string, c chan []string) {
 	var result []string
 	for _, record := range slice {
 		// if code matches the record, return the result
@@ -107,14 +128,19 @@ func checkSlice(input string, slice [][]string, c chan []string) {
 		}
 	}
 	c <- result
-}
+} */
 
 // search the csv records which include the given search term
 func SearchIFSC(searchTerm string) ([][]string, error) {
 	c := make(chan [][]string)
 	// trim the white spaces of the searchTerm if any
 	keyWord := strings.TrimSpace(searchTerm)
-	// create go routines to concurrenly search for
+	// if the search term is a vaild ifsc code, return it's data
+	v, err := CheckIfSC(keyWord)
+	if err != nil {
+		return [][]string{v}, nil
+	}
+	// else create go routines to concurrenly search for
 	// given input in different ranges of CsvSlice
 	go searchSlice(keyWord, CsvSlice[1:50000], c)
 	go searchSlice(keyWord, CsvSlice[50000:100000], c)
