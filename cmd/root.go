@@ -135,9 +135,9 @@ func SearchIFSC(searchTerm string) ([][]string, error) {
 	c := make(chan [][]string)
 	// trim the white spaces of the searchTerm if any
 	keyWord := strings.TrimSpace(searchTerm)
-	// if the search term is a vaild ifsc code, return it's data
+	// check if search term is a valid ifsc code
 	v, err := CheckIfSC(keyWord)
-	if err != nil {
+	if err == nil {
 		return [][]string{v}, nil
 	}
 	// else create go routines to concurrenly search for
