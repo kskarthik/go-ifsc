@@ -9,6 +9,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/spf13/cobra"
 	"os"
 	"strings"
@@ -47,7 +48,11 @@ var Fields = []string{}
 // ifsc codes as a map
 var IFSCMap = make(map[string][]string)
 
+// this var stores the location of the bleve's index directory
+var IndexDir string
+
 func init() {
+
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -58,6 +63,7 @@ func init() {
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
+	setCacheDir()
 	// read the csv
 	r := csv.NewReader(strings.NewReader(IFSCCodes))
 	// reads the string as a slice
@@ -74,61 +80,48 @@ func init() {
 	}
 }
 
+// Get user's cache dir.
+// Respect the XDG env, if set
+func setCacheDir() {
+
+	xdgCachePath := os.Getenv("XDG_CACHE_HOME")
+
+	if xdgCachePath != "" {
+		IndexDir = xdgCachePath + "/ifsc"
+		// fallback to default cache path
+	} else {
+		usrCacheDir, err := os.UserCacheDir()
+		if err != nil {
+			fmt.Println("Unable to locate cache directory")
+			os.Exit(1)
+		}
+		IndexDir = usrCacheDir + "/ifsc"
+	}
+}
+
 // checks whether a given IFSC code is valid, retuns a slice
 func CheckIfSC(code string) ([]string, error) {
-	// custom error
+
 	var e error = errors.New("Record not found")
-	// trim the white spaces for param
-	c := strings.TrimSpace(code)
-	// if the key exists in the map, return it's value
-	// else throw err
-	val, exists := IFSCMap[c]
-	if exists {
-		return val, nil
+	// open bleve index
+	index, _ := bleve.Open(IndexDir)
+	// define a new query
+	query := bleve.NewMatchQuery(strings.TrimSpace(code))
+	searchRequest := bleve.NewSearchRequest(query)
+	// enable all fields of the resulting document
+	searchRequest.Fields = []string{"*"}
+	result, _ := index.Search(searchRequest)
+	// handle the case of no matching
+	if result.Hits.Len() == 0 {
+		return []string{}, e
+	}
+	//TODO: convert the result []interface{} to []string
+	for _, val := range result.Hits[0].Fields {
+		r := fmt.Sprintf("%s", val)
+		print(r)
 	}
 	return []string{code}, e
 }
-
-/* func CheckIfSC(code string) ([]string, error) {
-	// custom error
-	var e error = errors.New("Record not found")
-	// trim the white spaces for param
-	ifscCode := strings.TrimSpace(code)
-	// create a channel
-	c := make(chan []string)
-	// create go routines to concurrenly search for
-	// given input in different ranges of CsvSlice
-	go checkSlice(ifscCode, CsvSlice[1:50000], c)
-	go checkSlice(ifscCode, CsvSlice[50000:100000], c)
-	go checkSlice(ifscCode, CsvSlice[100000:], c)
-	// assign goroutine results to three variables
-	r1, r2, r3 := <-c, <-c, <-c
-	// check each result & return the one which has the value
-	if len(r1) != 0 {
-		return r1, nil
-	}
-
-	if len(r2) != 0 {
-		return r2, nil
-	}
-
-	if len(r3) != 0 {
-		return r3, nil
-	}
-	return []string{code}, e
-} */
-
-// loop over the csv fields & return the matching result to channel
-/* func checkSlice(input string, slice [][]string, c chan []string) {
-	var result []string
-	for _, record := range slice {
-		// if code matches the record, return the result
-		if input == record[1] {
-			result = record
-		}
-	}
-	c <- result
-} */
 
 // search the csv records which include the given search term
 func SearchIFSC(searchTerm string) ([][]string, error) {

@@ -6,25 +6,6 @@ Also includes a REST API server 💥
 
 ⚡ Single binary | Works Offline ⚡
 
-```bash
-This utility helps to search, validate IFSC codes of Indian banks
-
-Usage:
-  ifsc [command]
-
-Available Commands:
-  check       Check whether a given IFSC code is valid
-  completion  Generate the autocompletion script for the specified shell
-  help        Help about any command
-  search      Fuzzy search for banks / IFSC codes
-  server      Launch the REST API server
-
-Flags:
-  -h, --help   help for ifsc
-
-Use "ifsc [command] --help" for more information about a command.
-```
-
 # Demo
 
 get bank details for an IFSC Code
@@ -55,6 +36,13 @@ There is no release ATM. All binaries are built on gitlab ci on each commit. You
 - 🪟 [Windows (x64)](https://kskarthik.gitlab.io/go-ifsc/win/ifsc.exe)
 - 🍎 [Mac (darwin x64)](https://kskarthik.gitlab.io/go-ifsc/darwin/ifsc)
 
+## Usage
+
+```bash
+# on the first start, you need to index the IFSC data locally, This is not required for subsequent runs.
+ifsc index
+```
+
 ## Docker
 
 The docker image is built for each commit & uploaded to docker hub
@@ -84,9 +72,6 @@ Tested with Go `>=1.19` & might work with Go versions `>=1.16` too.
 ```bash
 # after cloning  this repo, cd into it
 cd go-ifsc/
-
-# download the IFSC.csv to cmd/
-wget https://github.com/razorpay/ifsc/releases/download/v2.0.12/IFSC.csv -P cmd/
 
 # build the binary, public/ will contain the built binaries
 bash build.sh
