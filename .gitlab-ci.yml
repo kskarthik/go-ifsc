@@ -4,33 +4,42 @@ stages:
   - build
   - deploy
 
-variables:
-  IFSC_VERSION: v2.0.13
-
 services:
   - docker:20.10.19-dind
 
-docker image:
-  image: docker:20.10.19
+# build the ifsc binary
+ifsc:
   stage: build
   script:
-    # build the docker image & push to the dockerhub
-    - docker login -u kskarthik -p $DOCKERHUB_TOKEN
-    - docker build -t kskarthik/ifsc:latest --build-arg IFSC_VERSION=$IFSC_VERSION .
-    - docker push kskarthik/ifsc:latest
-
-pages:
-  stage: deploy
-  script:
-    - wget https://github.com/razorpay/ifsc/releases/download/$IFSC_VERSION/IFSC.csv -P cmd/
     - sh build.sh
   artifacts:
     paths:
       - public
-  only:
-    refs:
-      - branches
-    changes:
-      - Dockerfile
-      - cmd/**/*.go
-      - ./*.{sh,go}
+  # rules:
+  #   - if: $CI_COMMIT_REF_NAME == "master"
+  changes:
+    - Dockerfile
+    - cmd/**/*.go
+    - ./*.{sh,go}
+
+# build the docker image & push to the dockerhub
+docker:
+  image: docker:20.10.19
+  stage: build
+  script:
+    - docker login -u kskarthik -p $DOCKERHUB_TOKEN
+    - docker build -t kskarthik/ifsc:latest --build-arg IFSC_VERSION=$IFSC_VERSION .
+    - docker push kskarthik/ifsc:latest
+  changes:
+    - Dockerfile
+    - cmd/**/*.go
+    - ./*.{sh,go}
+
+# deploy to gitlab pages
+pages:
+  stage: deploy
+  artifacts:
+    paths:
+      - public
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
