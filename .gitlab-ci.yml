@@ -38,6 +38,8 @@ docker:
 # deploy to gitlab pages
 pages:
   stage: deploy
+  script:
+    - ls public/
   artifacts:
     paths:
       - public
