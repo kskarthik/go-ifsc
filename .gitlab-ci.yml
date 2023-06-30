@@ -15,12 +15,11 @@ ifsc:
   artifacts:
     paths:
       - public
-  # rules:
-  #   - if: $CI_COMMIT_REF_NAME == "master"
-  changes:
-    - Dockerfile
-    - cmd/**/*.go
-    - ./*.{sh,go}
+  only:
+    changes:
+      - Dockerfile
+      - cmd/**/*.go
+      - ./*.{sh,go}
 
 # build the docker image & push to the dockerhub
 docker:
@@ -30,10 +29,12 @@ docker:
     - docker login -u kskarthik -p $DOCKERHUB_TOKEN
     - docker build -t kskarthik/ifsc:latest --build-arg IFSC_VERSION=$IFSC_VERSION .
     - docker push kskarthik/ifsc:latest
-  changes:
-    - Dockerfile
-    - cmd/**/*.go
-    - ./*.{sh,go}
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
+      changes:
+        - Dockerfile
+        - cmd/**/*.go
+        - ./*.{sh,go}
 
 # deploy to gitlab pages
 pages:
@@ -45,3 +46,7 @@ pages:
       - public
   rules:
     - if: $CI_COMMIT_REF_NAME == "master"
+      changes:
+        - Dockerfile
+        - cmd/**/*.go
+        - ./*.{sh,go}
