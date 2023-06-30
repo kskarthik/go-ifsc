@@ -93,8 +93,7 @@ func indexCSV(v []byte) {
 	// delete the index dir, if already exists
 	os.RemoveAll(IndexDir)
 	// create a new index in user's cache directory
-	mapping := bleve.NewIndexMapping()
-	index, newIndexErr := bleve.New(IndexDir, mapping)
+	index, newIndexErr := bleve.New(IndexDir, bleve.NewIndexMapping())
 	if newIndexErr != nil {
 		fmt.Println(newIndexErr)
 		os.Exit(1)
