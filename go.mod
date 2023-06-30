@@ -3,6 +3,7 @@ module ifsc
 go 1.19
 
 require (
+	github.com/blevesearch/bleve/v2 v2.3.8
 	github.com/gin-gonic/gin v1.9.0
 	github.com/spf13/cobra v1.7.0
 )
@@ -10,7 +11,6 @@ require (
 require (
 	github.com/RoaringBitmap/roaring v0.9.4 // indirect
 	github.com/bits-and-blooms/bitset v1.2.0 // indirect
-	github.com/blevesearch/bleve/v2 v2.3.8 // indirect
 	github.com/blevesearch/bleve_index_api v1.0.5 // indirect
 	github.com/blevesearch/geo v0.1.17 // indirect
 	github.com/blevesearch/go-porterstemmer v1.0.3 // indirect

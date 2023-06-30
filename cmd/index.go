@@ -88,7 +88,7 @@ func indexCSV(v []byte) {
 	r := bytes.NewReader(v)
 	// invoke the csv reader
 	s := csv.NewReader(r)
-	// read
+	// read csv
 	csvSlice, _ := s.ReadAll()
 	// delete the index dir, if already exists
 	os.RemoveAll(IndexDir)
@@ -96,18 +96,23 @@ func indexCSV(v []byte) {
 	mapping := bleve.NewIndexMapping()
 	index, newIndexErr := bleve.New(IndexDir, mapping)
 	if newIndexErr != nil {
-		panic(newIndexErr)
+		fmt.Println(newIndexErr)
+		os.Exit(1)
 	}
-	fmt.Printf("Indexing the csv in %s This may take a few minutes\n", IndexDir)
+	fmt.Printf("Indexing the csv data in %s This may take a few minutes\n", IndexDir)
 	// invoke batch indexing https://github.com/blevesearch/bleve/discussions/1834#discussioncomment-6280490
 	batch := index.NewBatch()
 	for i := range csvSlice {
-		batch.Index(csvSlice[i][1], csvSlice[i])
+		// do not index columns
+		if i != 0 {
+			batch.Index(csvSlice[i][1], csvSlice[i])
+		}
 	}
 	// append the created batch to index
 	indexingErr := index.Batch(batch)
 	if indexingErr != nil {
-		panic(indexingErr)
+		fmt.Println(indexingErr)
+		os.Exit(1)
 	}
 	fmt.Println("Indexing Complete!")
 }

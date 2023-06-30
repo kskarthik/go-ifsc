@@ -118,7 +118,7 @@ func startServer() {
 		}
 		c.JSON(http.StatusOK, array)
 	})
-	fmt.Printf("Starting server on http://localhost:%s\nPress Ctrl+C to stop\n", hostPort)
+	fmt.Printf("Starting server on http://0.0.0.0:%s\nPress Ctrl+C to stop\n", hostPort)
 	// start the server
 	router.Run(":" + hostPort)
 }

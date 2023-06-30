@@ -4,21 +4,21 @@ RUN mkdir /ifsc/
 
 COPY . /ifsc/
 
-ARG IFSC_VERSION=v2.0.12
-
 RUN cd /ifsc/ &&\
-		wget https://github.com/razorpay/ifsc/releases/download/$IFSC_VERSION/IFSC.csv -P cmd/ &&\
 		sh build.sh
 
 FROM alpine:latest
 
 # create a non-root user to run the app
-RUN adduser --no-create-home --disabled-password ifsc-usr
+RUN adduser --disabled-password ifsc-usr
 
 # switch to non-root user
 USER ifsc-usr
 
 COPY --from=build /ifsc/public/linux/* /usr/local/bin/
+
+# index the latest ifsc data
+RUN ifsc index
 
 ENTRYPOINT [ "ifsc", "server" ]
 
