@@ -51,18 +51,19 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-
-	setCacheDir()
+	locateIndexDir()
 }
 
-// Get user's cache dir.
+// locate user's cache dir.
 // Respect the XDG env, if set
-func setCacheDir() {
+func locateIndexDir() {
+
+	dirName := "/ifsc"
 
 	xdgCachePath := os.Getenv("XDG_CACHE_HOME")
 
 	if xdgCachePath != "" {
-		IndexDir = xdgCachePath + "/ifsc"
+		IndexDir = xdgCachePath + dirName
 		// fallback to default cache path
 	} else {
 		usrCacheDir, err := os.UserCacheDir()
@@ -70,11 +71,11 @@ func setCacheDir() {
 			fmt.Println("Unable to locate cache directory")
 			os.Exit(1)
 		}
-		IndexDir = usrCacheDir + "/ifsc"
+		IndexDir = usrCacheDir + dirName
 	}
 }
 
-// convert the result []interface{} to []string
+// converts the []interface{} to []string
 func convertToSlice(fields map[string]interface{}) []string {
 
 	var result []string
@@ -89,11 +90,16 @@ func convertToSlice(fields map[string]interface{}) []string {
 
 // checks whether a given IFSC code is valid, retuns a slice
 func CheckIfSC(code string) ([]string, error) {
+	// open bleve index
+	index, err := bleve.Open(IndexDir)
+	if err != nil {
+		fmt.Printf("Index does not exist! Create one first\n\n")
+		rootCmd.Help()
+		os.Exit(1)
+	}
+	defer index.Close()
 
 	var e error = errors.New("Record not found")
-	// open bleve index
-	index, _ := bleve.Open(IndexDir)
-	defer index.Close()
 	// define a new query
 	query := bleve.NewMatchQuery(strings.TrimSpace(code))
 	searchRequest := bleve.NewSearchRequest(query)
@@ -111,7 +117,12 @@ func CheckIfSC(code string) ([]string, error) {
 // search the csv records which include the given search term
 func SearchIFSC(searchTerms []string) ([][]string, error) {
 	// open bleve index
-	index, _ := bleve.Open(IndexDir)
+	index, err := bleve.Open(IndexDir)
+	if err != nil {
+		fmt.Printf("Index does not exist! Create one first\n\n")
+		rootCmd.Help()
+		os.Exit(1)
+	}
 	defer index.Close()
 	// convert the searchTerms to bleve query type
 	bq := []query.Query{}
