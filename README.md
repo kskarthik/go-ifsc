@@ -10,12 +10,12 @@ A simple tool to check & search IFSC codes of all Indian banks from the comfort 
 - ⚡Works Offline
 - ⚡Searc functionality
 
-# Demo
+# API Demo
 
 Get bank details for an IFSC Code (Similar to [Razorpay's API](https://ifsc.razorpay.com/))
 
 ```sh
-$ curl -s http://insomnia247.nl:5100/YESB0DNB002 | jq
+curl -s http://insomnia247.nl:5100/YESB0DNB002 | jq
 {
   "BANK": "Delhi Nagrik Sehkari Bank",
   "IFSC": "YESB0DNB002",
@@ -52,7 +52,7 @@ curl -s http://insomnia247.nl:5100/search?q=axis+in-ga
 [{"BANK":"Axis Bank","IFSC":"UTIB0003418","BRANCH":"GOGOL","CENTRE":"SOUTH","DISTRICT":"SOUTH","STATE":"GOA","ADDRESS":"SHOP NO 12345 AR MANSION GOGOL","CONTACT":"+918326570622","IMPS":true,"RTGS":true,"CITY":"MARGAO","ISO3166":"IN-GA","NEFT":true,"MICR":"403211014","UPI":true,"SWIFT":null}]
 ```
 
-**NOTE:** Please do not use this api endpoint for production, It's for testing purposes only.
+> **NOTE:** Please do not use this api endpoint for production, It's for testing purposes only.
 
 # Download
 
