@@ -7,10 +7,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"github.com/blevesearch/bleve/v2"
-	"github.com/spf13/cobra"
 	"os"
 	"strings"
+
+	"github.com/blevesearch/bleve/v2"
+	"github.com/blevesearch/bleve/v2/search/query"
+	"github.com/spf13/cobra"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -107,17 +109,26 @@ func CheckIfSC(code string) ([]string, error) {
 }
 
 // search the csv records which include the given search term
-func SearchIFSC(searchTerm string) ([][]string, error) {
+func SearchIFSC(searchTerms []string) ([][]string, error) {
 	// open bleve index
 	index, _ := bleve.Open(IndexDir)
 	defer index.Close()
-	// define a new query
-	query := bleve.NewMatchQuery(strings.TrimSpace(searchTerm))
+	// convert the searchTerms to bleve query type
+	bq := []query.Query{}
+	for _, term := range searchTerms {
+		bq = append(bq, bleve.NewMatchQuery(term))
+	}
+	// create a conjuction query which looks for matches in a document for any given search term
+	query := query.NewConjunctionQuery(bq)
 	searchRequest := bleve.NewSearchRequest(query)
 	// enable all fields of the resulting document
 	searchRequest.Fields = []string{"*"}
+	// max count of search results is the size of the index
+	indexSize, _ := index.DocCount()
+	searchRequest.Size = int(indexSize)
+	// assign the search results
 	result, _ := index.Search(searchRequest)
-	// handle the case of no matching
+	// contains the results slice
 	var finalResult [][]string
 	// append the results to finalResult slice
 	if result.Hits.Len() > 0 {

@@ -6,9 +6,11 @@ package cmd
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
-	"net/http"
 )
 
 // cli command flags
@@ -105,7 +107,7 @@ func startServer() {
 	})
 	// search for banks
 	router.GET("/search/:query", func(c *gin.Context) {
-		name := c.Param("query")
+		name := strings.Split(c.Param("query"), "+")
 		res, e := SearchIFSC(name)
 		if e != nil {
 			c.Status(http.StatusNotFound)

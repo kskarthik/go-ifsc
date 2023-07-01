@@ -17,13 +17,13 @@ var searchCmd = &cobra.Command{
 
 	The search term can be anything, Like Bank address, name, phone number, location etc`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var searchString string
+		/* var searchString string
 		// convert all additional arguments to string
 		for i := range args {
 			searchString += " " + args[i]
-		}
+		} */
 		// print the search results if there are any, to stdout
-		searchResults, e := SearchIFSC(searchString)
+		searchResults, e := SearchIFSC(args)
 		if e == nil && len(searchResults) > 0 {
 			for i := range searchResults {
 				PrintResult(searchResults[i])
