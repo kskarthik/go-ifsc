@@ -32,7 +32,7 @@ search for all axis banks in Goa
 ```sh
 curl http://insomnia247.nl:5100/search?q=axis+in-ga
 
-{"BANK":"Axis Bank","IFSC":"UTIB0003418","BRANCH":"GOGOL","CENTRE":"SOUTH","DISTRICT":"SOUTH","STATE":"GOA","ADDRESS":"SHOP NO 12345 AR MANSION GOGOL","CONTACT":"+918326570622","IMPS":true,"RTGS":true,"CITY":"MARGAO","ISO3166":"IN-GA","NEFT":true,"MICR":"403211014","UPI":true,"SWIFT":null}
+[{"BANK":"Axis Bank","IFSC":"UTIB0003418","BRANCH":"GOGOL","CENTRE":"SOUTH","DISTRICT":"SOUTH","STATE":"GOA","ADDRESS":"SHOP NO 12345 AR MANSION GOGOL","CONTACT":"+918326570622","IMPS":true,"RTGS":true,"CITY":"MARGAO","ISO3166":"IN-GA","NEFT":true,"MICR":"403211014","UPI":true,"SWIFT":null}]
 ```
 
 **NOTE:** Please do not use this api endpoint for production, It's for testing purposes only.
