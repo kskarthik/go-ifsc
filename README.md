@@ -197,7 +197,7 @@ If the code is invalid or no result was found, Server responds with 404
 
 This API searches the data set for given `search_term` & returns an array of objects which match the search term
 
-Example: `/search/king koti`
+Example: `/search/king+koti`
 
 ```json
 [
