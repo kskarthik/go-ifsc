@@ -8,29 +8,46 @@ A simple tool to check & search IFSC codes of all Indian banks from the comfort 
 - ⚡Includes a REST API server 💥
 - ⚡Single binary
 - ⚡Works Offline
+- ⚡Searc functionality
 
 # Demo
 
-get bank details for an IFSC Code
+Get bank details for an IFSC Code (Similar to [Razorpay's API](https://ifsc.razorpay.com/))
 
 ```sh
-curl http://insomnia247.nl:5100/YESB0DNB002
-
-{"BANK":"Delhi Nagrik Sehkari Bank","IFSC":"YESB0DNB002","BRANCH":"Delhi Nagrik Sehkari Bank IMPS","CENTRE":"DELHI","DISTRICT":"DELHI","STATE":"MAHARASHTRA","ADDRESS":"720, NEAR GHANTAGHAR, SUBZI MANDI, DELHI - 110007","CONTACT":"+919560344685","IMPS":true,"RTGS":true,"CITY":"MUMBAI","ISO3166":"IN-MH","NEFT":true,"MICR":"110196002","UPI":true,"SWIFT":null}
+$ curl -s http://insomnia247.nl:5100/YESB0DNB002 | jq
+{
+  "BANK": "Delhi Nagrik Sehkari Bank",
+  "IFSC": "YESB0DNB002",
+  "BRANCH": "Delhi Nagrik Sehkari Bank IMPS",
+  "CENTRE": "DELHI",
+  "DISTRICT": "DELHI",
+  "STATE": "MAHARASHTRA",
+  "ADDRESS": "720, NEAR GHANTAGHAR, SUBZI MANDI, DELHI - 110007",
+  "CONTACT": "+919560344685",
+  "IMPS": true,
+  "RTGS": true,
+  "CITY": "MUMBAI",
+  "ISO3166": "IN-MH",
+  "NEFT": true,
+  "MICR": "110196002",
+  "UPI": true,
+  "SWIFT": null
+}
 ```
 
-search for banks in an area
+Search for banks in an area
 
 ```sh
-curl http://insomnia247.nl:5100/search?q=hitech+city
+curl -s http://insomnia247.nl:5100/search?q=hitech+city
 
 [{"BANK":"Bandhan Bank","IFSC":"BDBL0002291","BRANCH":"KAVURI HILLS BRANCH HYDERABAD","CENTRE":"HYDERABAD","DISTRICT":"HYDERABAD","STATE":"TELANGANA","ADDRESS":"2-44 2,MADHAPUR PRIDE,GUTTALA BEGUMPET,MADHAPUR,HITECH CITY MAIN ROAD,GROUND FLOOR,MADHAPUR POLICE STATION -500081,TELANGANA","CONTACT":"+913366090909","IMPS":true,"RTGS":true,"CITY":"HYDERABAD","ISO3166":"IN-TG","NEFT":true,"MICR":"500750012","UPI":true,"SWIFT":null},{"BANK":"Central Bank of India","IFSC":"CBIN0283164","BRANCH":"HITECH AGRICULTURAL FINANCE BRANCH","CENTRE":"BHOPAL","DISTRICT":"BHOPAL","STATE":"MADHYA PRADESH","ADDRESS":"9, ARERA HILL, JAIL ROAD, BHOPAL, DIST- BHOPAL, MADHYA PRADESH-462011","CONTACT":"+912222612008","IMPS":true,"RTGS":true,"CITY":"BHOPAL","ISO3166":"IN-MP","NEFT":true,"MICR":"462016022","UPI":true,"SWIFT":null}]
 ```
 
-search for all axis banks in Goa
+Search for all axis banks in a state, Eg: Goa
 
 ```sh
-curl http://insomnia247.nl:5100/search?q=axis+in-ga
+curl -s http://insomnia247.nl:5100/search?q=axis+in-ga
 
 [{"BANK":"Axis Bank","IFSC":"UTIB0003418","BRANCH":"GOGOL","CENTRE":"SOUTH","DISTRICT":"SOUTH","STATE":"GOA","ADDRESS":"SHOP NO 12345 AR MANSION GOGOL","CONTACT":"+918326570622","IMPS":true,"RTGS":true,"CITY":"MARGAO","ISO3166":"IN-GA","NEFT":true,"MICR":"403211014","UPI":true,"SWIFT":null}]
 ```
@@ -76,6 +93,8 @@ chmod +x ifsc
 ./ifsc index
 # start a rest API server
 ./ifsc server
+# Print usage info
+./ifsc help
 ```
 
 # CLI Examples 😍
