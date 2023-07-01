@@ -8,7 +8,7 @@ A simple tool to check & search IFSC codes of all Indian banks from the comfort 
 - ⚡Includes a REST API server 💥
 - ⚡Single binary
 - ⚡Works Offline
-- ⚡Searc functionality
+- ⚡Search functionality
 
 # API Demo
 
