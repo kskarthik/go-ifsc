@@ -19,7 +19,7 @@ curl http://insomnia247.nl:5100/YESB0DNB002
 search for banks in an area
 
 ```sh
-curl http://insomnia247.nl:5100/search/hitech city
+curl http://insomnia247.nl:5100/search/hitech+city
 
 [{"BANK":"Bandhan Bank","IFSC":"BDBL0002291","BRANCH":"KAVURI HILLS BRANCH HYDERABAD","CENTRE":"HYDERABAD","DISTRICT":"HYDERABAD","STATE":"TELANGANA","ADDRESS":"2-44 2,MADHAPUR PRIDE,GUTTALA BEGUMPET,MADHAPUR,HITECH CITY MAIN ROAD,GROUND FLOOR,MADHAPUR POLICE STATION -500081,TELANGANA","CONTACT":"+913366090909","IMPS":true,"RTGS":true,"CITY":"HYDERABAD","ISO3166":"IN-TG","NEFT":true,"MICR":"500750012","UPI":true,"SWIFT":null},{"BANK":"Central Bank of India","IFSC":"CBIN0283164","BRANCH":"HITECH AGRICULTURAL FINANCE BRANCH","CENTRE":"BHOPAL","DISTRICT":"BHOPAL","STATE":"MADHYA PRADESH","ADDRESS":"9, ARERA HILL, JAIL ROAD, BHOPAL, DIST- BHOPAL, MADHYA PRADESH-462011","CONTACT":"+912222612008","IMPS":true,"RTGS":true,"CITY":"BHOPAL","ISO3166":"IN-MP","NEFT":true,"MICR":"462016022","UPI":true,"SWIFT":null},
 ```
@@ -39,8 +39,10 @@ There is no release ATM. All binaries are built on gitlab ci on each commit. You
 ## Usage
 
 ```bash
+# give execute permissions
+chmod +x ifsc
 # on the first start, you need to index the IFSC data locally, This is not required for subsequent runs.
-ifsc index
+./ifsc index
 ```
 
 ## Docker
@@ -230,7 +232,7 @@ All the code, except the `IFSC.csv` file dump, is licensed under `GPLv3` & serve
 
 - [x] Provide a REST API for search & validation
 - [x] handle the search command param properly
-- [ ] Improve the check & search logic
+- [x] Improve the check & search logic
 
 # Credits 🤝
 
