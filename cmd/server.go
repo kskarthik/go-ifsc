@@ -17,6 +17,7 @@ import (
 var hostPort string
 var Mode string
 
+// the body of each result
 type Body struct {
 	BANK     string
 	IFSC     string
@@ -63,30 +64,30 @@ func toBool(s string) bool {
 // convert & return the IFSC slice as struct
 func ifscStruct(r []string) Body {
 
-	var body Body
+	var b Body
 
-	body.BANK = r[0]
-	body.IFSC = r[1]
-	body.BRANCH = r[2]
-	body.CENTRE = r[3]
-	body.DISTRICT = r[4]
-	body.STATE = r[5]
-	body.ADDRESS = r[6]
-	body.CONTACT = r[7]
-	body.IMPS = toBool(r[8])
-	body.RTGS = toBool(r[9])
-	body.CITY = r[10]
-	body.ISO3166 = r[11]
-	body.NEFT = toBool(r[12])
-	body.MICR = r[13]
-	body.UPI = toBool(r[14])
+	b.BANK = r[0]
+	b.IFSC = r[1]
+	b.BRANCH = r[2]
+	b.CENTRE = r[3]
+	b.DISTRICT = r[4]
+	b.STATE = r[5]
+	b.ADDRESS = r[6]
+	b.CONTACT = r[7]
+	b.IMPS = toBool(r[8])
+	b.RTGS = toBool(r[9])
+	b.CITY = r[10]
+	b.ISO3166 = r[11]
+	b.NEFT = toBool(r[12])
+	b.MICR = r[13]
+	b.UPI = toBool(r[14])
 	// return null of swift is empty
 	if r[15] == "" {
-		body.SWIFT = nil
+		b.SWIFT = nil
 	} else {
-		body.SWIFT = &r[15]
+		b.SWIFT = &r[15]
 	}
-	return body
+	return b
 }
 
 // start the REST api server & handle the config & incoming requests
@@ -106,8 +107,9 @@ func startServer() {
 		}
 	})
 	// search for banks
-	router.GET("/search/:query", func(c *gin.Context) {
-		name := strings.Split(c.Param("query"), "+")
+	router.GET("/search", func(c *gin.Context) {
+		// parse the query params
+		name := strings.Split(c.Query("q"), "+")
 		res, e := SearchIFSC(name)
 		if e != nil {
 			c.Status(http.StatusNotFound)
