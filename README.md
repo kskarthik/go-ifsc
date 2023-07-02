@@ -56,7 +56,7 @@ curl -s http://insomnia247.nl:5100/search?q=axis+in-ga
 
 # Download
 
-There is no release ATM. All binaries are built on gitlab ci on each commit. You can download from the links below
+All binaries are built on gitlab ci on each commit. You can download from the links below
 
 ## Desktop/Server
 
