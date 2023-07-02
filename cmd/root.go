@@ -17,9 +17,10 @@ import (
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "ifsc",
-	Short: "Search & Validate IFSC Codes",
-	Long:  `This utility helps to search, validate IFSC codes of Indian banks`,
+	Use:     "ifsc",
+	Short:   "Search & Validate IFSC Codes",
+	Long:    `This utility helps to search, validate IFSC codes of Indian banks`,
+	Version: AppVersion,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -39,6 +40,8 @@ var Fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE",
 
 // this var stores the location of the bleve's index directory
 var IndexDir string
+
+var AppVersion string = "0.1.0"
 
 func init() {
 
@@ -129,14 +132,15 @@ func SearchIFSC(searchTerms []string) ([][]string, error) {
 	for _, term := range searchTerms {
 		bq = append(bq, bleve.NewMatchQuery(term))
 	}
-	// create a conjuction query which looks for matches in a document for any given search term
+	// create a disjunction query which matches the docs satisfying all search terms
 	query := query.NewConjunctionQuery(bq)
 	searchRequest := bleve.NewSearchRequest(query)
 	// enable all fields of the resulting document
 	searchRequest.Fields = []string{"*"}
 	// max count of search results is the size of the index
-	indexSize, _ := index.DocCount()
-	searchRequest.Size = int(indexSize)
+	// indexSize, _ := index.DocCount()
+	// TODO: make this value user customizable
+	searchRequest.Size = 1000
 	// assign the search results
 	result, _ := index.Search(searchRequest)
 	// contains the results slice
