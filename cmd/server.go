@@ -7,35 +7,15 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 )
 
-// cli command flags
+// cli falgs
 var hostPort string
-var Mode string
-
-// the body of each result
-type Body struct {
-	BANK     string
-	IFSC     string
-	BRANCH   string
-	CENTRE   string
-	DISTRICT string
-	STATE    string
-	ADDRESS  string
-	CONTACT  string
-	IMPS     bool
-	RTGS     bool
-	CITY     string
-	ISO3166  string
-	NEFT     bool
-	MICR     string
-	UPI      bool
-	SWIFT    *string
-}
 
 // serverCmd represents the server command
 var serverCmd = &cobra.Command{
@@ -45,20 +25,13 @@ var serverCmd = &cobra.Command{
 
 Endpoints:
 	/:ifsc - validate a IFSC code. Returns an json object on success, else throws 404 error
-	/search/:query - Search for banks / ifsc codes`,
+
+	/search?q= - Search for banks / ifsc codes`,
 	Run: func(cmd *cobra.Command, args []string) {
 		// server mode
-		gin.SetMode(Mode)
+		gin.SetMode(ServerMode)
 		startServer()
 	},
-}
-
-// convert a string to boolean
-func toBool(s string) bool {
-	if s == "true" {
-		return true
-	}
-	return false
 }
 
 // convert & return the IFSC slice as struct
@@ -74,13 +47,13 @@ func ifscStruct(r []string) Body {
 	b.STATE = r[5]
 	b.ADDRESS = r[6]
 	b.CONTACT = r[7]
-	b.IMPS = toBool(r[8])
-	b.RTGS = toBool(r[9])
+	b.IMPS = ToBool(r[8])
+	b.RTGS = ToBool(r[9])
 	b.CITY = r[10]
 	b.ISO3166 = r[11]
-	b.NEFT = toBool(r[12])
+	b.NEFT = ToBool(r[12])
 	b.MICR = r[13]
-	b.UPI = toBool(r[14])
+	b.UPI = ToBool(r[14])
 	// return null of swift is empty
 	if r[15] == "" {
 		b.SWIFT = nil
@@ -99,7 +72,7 @@ func startServer() {
 		if len(name) != 11 {
 			c.Status(http.StatusNotFound)
 		}
-		res, e := CheckIfSC(name)
+		res, e := CheckIFSC(name)
 		if e != nil {
 			c.Status(http.StatusNotFound)
 		} else {
@@ -108,9 +81,25 @@ func startServer() {
 	})
 	// search for banks
 	router.GET("/search", func(c *gin.Context) {
+
 		// parse the query params
-		name := strings.Split(c.Query("q"), "+")
-		res, e := SearchIFSC(name)
+		var params SearchParams
+		params.terms = strings.Split(c.Query("q"), " ")
+		params.match = c.Query("match")
+
+		// process the limit
+		if c.Query("limit") == "" {
+			params.limit = DefaultSearchLimit
+		} else {
+			r, _ := strconv.Atoi(c.Query("limit"))
+			params.limit = r
+		}
+		// process the match
+		if params.match == "" {
+			params.match = DefaultMatch
+		}
+		// perform the search
+		res, e := SearchIFSC(params)
 		if e != nil {
 			c.Status(http.StatusNotFound)
 		}
@@ -129,15 +118,7 @@ func startServer() {
 
 func init() {
 	rootCmd.AddCommand(serverCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// serverCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
+	// parse the cli flags
 	serverCmd.Flags().StringVarP(&hostPort, "port", "p", "9000", "server port")
-	serverCmd.Flags().StringVarP(&Mode, "mode", "m", "release", "Toggle between debug & release mode for server. Debug prints the logs")
+	serverCmd.Flags().StringVarP(&ServerMode, "mode", "m", "release", "Toggle between debug & release mode for server")
 }

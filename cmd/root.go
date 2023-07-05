@@ -7,12 +7,11 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"os"
-	"strings"
-
 	"github.com/blevesearch/bleve/v2"
 	"github.com/blevesearch/bleve/v2/search/query"
 	"github.com/spf13/cobra"
+	"os"
+	"strings"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -34,14 +33,6 @@ func Execute() {
 		os.Exit(1)
 	}
 }
-
-// the column names of the csv
-var Fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
-
-// this var stores the location of the bleve's index directory
-var IndexDir string
-
-var AppVersion string = "0.1.0"
 
 func init() {
 
@@ -78,21 +69,8 @@ func locateIndexDir() {
 	}
 }
 
-// converts the []interface{} to []string
-func convertToSlice(fields map[string]interface{}) []string {
-
-	var result []string
-
-	for _, val := range fields {
-		for _, v := range val.([]any) {
-			result = append(result, v.(string))
-		}
-	}
-	return result
-}
-
 // checks whether a given IFSC code is valid, retuns a slice
-func CheckIfSC(code string) ([]string, error) {
+func CheckIFSC(code string) ([]string, error) {
 	// open bleve index
 	index, err := bleve.Open(IndexDir)
 	if err != nil {
@@ -113,12 +91,40 @@ func CheckIfSC(code string) ([]string, error) {
 	if result.Hits.Len() == 0 {
 		return []string{}, e
 	} else {
-		return convertToSlice(result.Hits[0].Fields), nil
+		return ConvertToSlice(result.Hits[0].Fields), nil
 	}
 }
 
-// search the csv records which include the given search term
-func SearchIFSC(searchTerms []string) ([][]string, error) {
+// prepares the search query based on the params
+func SearchIFSC(q SearchParams) ([][]string, error) {
+	// convert the query terms based on the matching option to bleve query type
+	bq := []query.Query{}
+	for _, term := range q.terms {
+		if q.match == "fuzzy" {
+			bq = append(bq, bleve.NewFuzzyQuery(term))
+		} else {
+			bq = append(bq, bleve.NewMatchQuery(term))
+		}
+
+	}
+	var result [][]string
+
+	switch q.match {
+	case "regex":
+		r := search(bleve.NewRegexpQuery("/"+q.terms[0]+"/"), q)
+		result = r
+	case "all":
+		r := search(query.NewConjunctionQuery(bq), q)
+		result = r
+	default:
+		r := search(query.NewDisjunctionQuery(bq), q)
+		result = r
+	}
+	return result, nil
+}
+
+// performs the actual search over the docs
+func search(q query.Query, p SearchParams) [][]string {
 	// open bleve index
 	index, err := bleve.Open(IndexDir)
 	if err != nil {
@@ -127,20 +133,12 @@ func SearchIFSC(searchTerms []string) ([][]string, error) {
 		os.Exit(1)
 	}
 	defer index.Close()
-	// convert the searchTerms to bleve query type
-	bq := []query.Query{}
-	for _, term := range searchTerms {
-		bq = append(bq, bleve.NewMatchQuery(term))
-	}
-	// create a disjunction query which matches the docs satisfying all search terms
-	query := query.NewConjunctionQuery(bq)
-	searchRequest := bleve.NewSearchRequest(query)
+
+	searchRequest := bleve.NewSearchRequest(q)
 	// enable all fields of the resulting document
 	searchRequest.Fields = []string{"*"}
-	// max count of search results is the size of the index
-	// indexSize, _ := index.DocCount()
-	// TODO: make this value user customizable
-	searchRequest.Size = 1000
+	// max count of search results
+	searchRequest.Size = p.limit
 	// assign the search results
 	result, _ := index.Search(searchRequest)
 	// contains the results slice
@@ -148,26 +146,8 @@ func SearchIFSC(searchTerms []string) ([][]string, error) {
 	// append the results to finalResult slice
 	if result.Hits.Len() > 0 {
 		for i := range result.Hits {
-			finalResult = append(finalResult, convertToSlice(result.Hits[i].Fields))
+			finalResult = append(finalResult, ConvertToSlice(result.Hits[i].Fields))
 		}
 	}
-	return finalResult, nil
-}
-
-// format the provided arg and print to stdout
-func PrintResult(record []string) {
-
-	for i := range record {
-		var value string = record[i]
-		if record[i] == "true" {
-			value = "yes"
-		}
-		if record[i] == "false" {
-			value = "no"
-		}
-		if record[i] == "" {
-			value = "N/A"
-		}
-		fmt.Println(Fields[i], ":", value)
-	}
+	return finalResult
 }

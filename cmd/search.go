@@ -6,24 +6,32 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 )
+
+var match string
+var limit int
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "Fuzzy search for banks / IFSC codes",
-	Long: `Fuzzy search for banks / IFSC codes
+	Short: "Search for banks / IFSC codes",
+	Long: `Search for banks / IFSC codes
 
-	The search term can be anything, Like Bank address, name, phone number, location etc`,
+	The search term can be anything: bank address, name, phone number, city etc...`,
 	Run: func(cmd *cobra.Command, args []string) {
-		/* var searchString string
-		// convert all additional arguments to string
-		for i := range args {
-			searchString += " " + args[i]
-		} */
+		if len(args) == 0 {
+			fmt.Println("Please provide search term(s)")
+			os.Exit(1)
+		}
+		var searchArgs SearchParams
+		searchArgs.match = match
+		searchArgs.limit = limit
+		searchArgs.terms = args
 		// print the search results if there are any, to stdout
-		searchResults, e := SearchIFSC(args)
+		searchResults, e := SearchIFSC(searchArgs)
 		if e == nil && len(searchResults) > 0 {
 			for i := range searchResults {
 				PrintResult(searchResults[i])
@@ -37,14 +45,8 @@ var searchCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(searchCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// searchCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// searchCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	// flags
+	searchCmd.Flags().StringVarP(&match, "match", "m", DefaultMatch, "Set text matching type:\n\tall - Matches docs containing all search terms\n\tany - Matches docs containing any one of the search terms\n\tfuzzy - Matches docs containing similar search terms")
+	// search count limit
+	searchCmd.Flags().IntVarP(&limit, "limit", "l", DefaultSearchLimit, "Limit the number of search results")
 }
