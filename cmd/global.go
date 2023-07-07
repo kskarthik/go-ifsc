@@ -6,12 +6,15 @@ This file contains global vars and utility functions
 */
 package cmd
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+)
 
 // this var stores the location of the bleve's index directory
 var IndexDir string
 
-var AppVersion string = "0.1.0"
+var AppVersion string = "0.2.0"
 
 // the columns of the csv
 var Fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
@@ -23,7 +26,13 @@ var ServerMode string
 const DefaultSearchLimit int = 100
 
 // default text matching pattern
-const DefaultMatch = "any"
+const DefaultMatch = "fuzzy"
+
+const SearchHelp string = `Text matching type:
+	all - Matches docs containing all search termsany
+	any - Matches docs containing any one of the search terms
+	fuzzy - Matches docs containing any or similar search terms
+	regex - Advanced query syntax. Refer https://blevesearch.com/docs/Query-String-Query/`
 
 type SearchParams struct {
 	// search terms
@@ -56,10 +65,8 @@ type Body struct {
 
 // convert a string to boolean
 func ToBool(s string) bool {
-	if s == "true" {
-		return true
-	}
-	return false
+	r, _ := strconv.ParseBool(s)
+	return r
 }
 
 // converts the []interface{} to []string
@@ -79,6 +86,7 @@ func ConvertToSlice(fields map[string]interface{}) []string {
 func PrintResult(record []string) {
 
 	for i := range record {
+
 		var value string = record[i]
 		if record[i] == "true" {
 			value = "yes"
@@ -89,6 +97,6 @@ func PrintResult(record []string) {
 		if record[i] == "" {
 			value = "N/A"
 		}
-		fmt.Println(Fields[i], ":", value)
+		fmt.Printf("%8s\t%s\n", Fields[i], value)
 	}
 }
