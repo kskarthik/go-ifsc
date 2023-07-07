@@ -6,12 +6,11 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/cobra"
 	"net/http"
 	"strconv"
 	"strings"
-
-	"github.com/gin-gonic/gin"
-	"github.com/spf13/cobra"
 )
 
 // cli falgs
@@ -24,9 +23,18 @@ var serverCmd = &cobra.Command{
 	Long: `Launch the REST API server at port 9000. Can be customized with flags
 
 Endpoints:
-	/:ifsc - validate a IFSC code. Returns an json object on success, else throws 404 error
+	/ - validate a IFSC code. Returns an json object on success, else throws 404 error
+	url params
+	==========
+	ifsc: valid ifsc code (string)
 
-	/search?q= - Search for banks / ifsc codes`,
+	/search - Search for banks / ifsc codes. returns an array of objects
+	query params
+	============
+	q: search terms (string)
+	match: can be of type all, any, fuzzy, regex (string)
+	limit: limit of search results (int)`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 		// server mode
 		gin.SetMode(ServerMode)
@@ -66,7 +74,16 @@ func ifscStruct(r []string) Body {
 // start the REST api server & handle the config & incoming requests
 func startServer() {
 	router := gin.Default()
-	// validate IFSC code
+	checkAPI(router)
+	searchAPI(router)
+	fmt.Printf("Starting server on http://0.0.0.0:%s\nPress Ctrl+C to stop\n", hostPort)
+	// start the server
+	router.Run(":" + hostPort)
+}
+
+// validate IFSC code, Throw 404 if invalid
+func checkAPI(router *gin.Engine) {
+
 	router.GET("/:ifsc", func(c *gin.Context) {
 		name := c.Param("ifsc")
 		if len(name) != 11 {
@@ -79,12 +96,14 @@ func startServer() {
 			c.JSON(http.StatusOK, ifscStruct(res))
 		}
 	})
-	// search for banks
-	router.GET("/search", func(c *gin.Context) {
+}
 
+// search for banks
+func searchAPI(router *gin.Engine) {
+
+	router.GET("/search", func(c *gin.Context) {
 		// parse the query params
-		var params SearchParams
-		params.terms = strings.Split(c.Query("q"), " ")
+		params := SearchParams{}
 		params.match = c.Query("match")
 
 		// process the limit
@@ -98,22 +117,28 @@ func startServer() {
 		if params.match == "" {
 			params.match = DefaultMatch
 		}
+		if params.match != "regex" {
+			params.terms = strings.Split(c.Query("q"), " ")
+		} else {
+			params.terms = []string{c.Query("q")}
+		}
+		var statusCode int
+
+		response := []Body{}
 		// perform the search
 		res, e := SearchIFSC(params)
 		if e != nil {
-			c.Status(http.StatusNotFound)
+			statusCode = http.StatusBadRequest
+		} else {
+			// loop over the elements of the slice
+			for i := range res {
+				r := append(response, ifscStruct(res[i]))
+				response = r
+				statusCode = http.StatusOK
+			}
 		}
-		array := []Body{}
-		// loop over the elements of the slice
-		for i := range res {
-			r := append(array, ifscStruct(res[i]))
-			array = r
-		}
-		c.JSON(http.StatusOK, array)
+		c.JSON(statusCode, response)
 	})
-	fmt.Printf("Starting server on http://0.0.0.0:%s\nPress Ctrl+C to stop\n", hostPort)
-	// start the server
-	router.Run(":" + hostPort)
 }
 
 func init() {
