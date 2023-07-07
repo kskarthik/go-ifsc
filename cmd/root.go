@@ -108,23 +108,32 @@ func SearchIFSC(q SearchParams) ([][]string, error) {
 
 	}
 	var result [][]string
-
+	// https://blevesearch.com/docs/Query-String-Query/
 	switch q.match {
 	case "regex":
-		r := search(bleve.NewRegexpQuery("/"+q.terms[0]+"/"), q)
+		r, e := search(bleve.NewQueryStringQuery(q.terms[0]), q)
+		if e != nil {
+			return result, e
+		}
 		result = r
 	case "all":
-		r := search(query.NewConjunctionQuery(bq), q)
+		r, e := search(query.NewConjunctionQuery(bq), q)
+		if e != nil {
+			return result, e
+		}
 		result = r
 	default:
-		r := search(query.NewDisjunctionQuery(bq), q)
+		r, e := search(query.NewDisjunctionQuery(bq), q)
+		if e != nil {
+			return result, e
+		}
 		result = r
 	}
 	return result, nil
 }
 
 // performs the actual search over the docs
-func search(q query.Query, p SearchParams) [][]string {
+func search(q query.Query, p SearchParams) ([][]string, error) {
 	// open bleve index
 	index, err := bleve.Open(IndexDir)
 	if err != nil {
@@ -140,14 +149,19 @@ func search(q query.Query, p SearchParams) [][]string {
 	// max count of search results
 	searchRequest.Size = p.limit
 	// assign the search results
-	result, _ := index.Search(searchRequest)
+	result, searchErr := index.Search(searchRequest)
+
 	// contains the results slice
 	var finalResult [][]string
+
+	if searchErr != nil {
+		return finalResult, searchErr
+	}
 	// append the results to finalResult slice
 	if result.Hits.Len() > 0 {
 		for i := range result.Hits {
 			finalResult = append(finalResult, ConvertToSlice(result.Hits[i].Fields))
 		}
 	}
-	return finalResult
+	return finalResult, nil
 }
