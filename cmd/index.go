@@ -92,11 +92,10 @@ func indexCSV(v []byte) {
 	fmt.Printf("Indexing the csv data in %s This may take a few minutes\n", IndexDir)
 	// invoke batch indexing https://github.com/blevesearch/bleve/discussions/1834#discussioncomment-6280490
 	batch := index.NewBatch()
-	for i := range csvSlice {
-		// do not index columns
-		if i != 0 {
-			batch.Index(csvSlice[i][1], csvSlice[i])
-		}
+
+	for i := range csvSlice[1:] {
+
+		batch.Index(csvSlice[i][1], csvSlice[i])
 	}
 	// append the created batch to index
 	indexingErr := index.Batch(batch)
