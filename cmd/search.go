@@ -6,13 +6,11 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
 )
 
-var match string
-var limit int
+var params SearchParams
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
@@ -26,13 +24,14 @@ var searchCmd = &cobra.Command{
 			fmt.Println("Please provide search term(s)")
 			os.Exit(1)
 		}
-		var searchArgs SearchParams
-		searchArgs.match = match
-		searchArgs.limit = limit
-		searchArgs.terms = args
+		params.terms = args
 		// print the search results if there are any, to stdout
-		searchResults, e := SearchIFSC(searchArgs)
-		if e == nil && len(searchResults) > 0 {
+		searchResults, e := SearchIFSC(params)
+		if e != nil {
+			fmt.Println(e)
+			os.Exit(1)
+		}
+		if len(searchResults) > 0 {
 			for i := range searchResults {
 				PrintResult(searchResults[i])
 				fmt.Println("----------------------")
@@ -46,7 +45,7 @@ var searchCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(searchCmd)
 	// flags
-	searchCmd.Flags().StringVarP(&match, "match", "m", DefaultMatch, "Set text matching type:\n\tall - Matches docs containing all search terms\n\tany - Matches docs containing any one of the search terms\n\tfuzzy - Matches docs containing similar search terms")
+	searchCmd.Flags().StringVarP(&params.match, "match", "m", DefaultMatch, SearchHelp)
 	// search count limit
-	searchCmd.Flags().IntVarP(&limit, "limit", "l", DefaultSearchLimit, "Limit the number of search results")
+	searchCmd.Flags().IntVarP(&params.limit, "limit", "l", DefaultSearchLimit, "Limit the number of search results")
 }
