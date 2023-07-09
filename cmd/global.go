@@ -17,22 +17,22 @@ var IndexDir string
 var AppVersion string = "0.2.0"
 
 // the columns of the csv
-var Fields = [16]string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
+var Fields = []string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
 
 // debug or release mode for the rest api server
 var ServerMode string
 
 // default search result max limit
-const DefaultSearchLimit int = 100
+const DefaultSearchLimit int = 20
 
 // default text matching pattern
-const DefaultMatch = "fuzzy"
+const DefaultMatch = "any"
 
 const SearchHelp string = `Text matching type:
-	all - Matches docs containing all search termsany
+	all - Matches docs containing all search terms
 	any - Matches docs containing any one of the search terms
-	fuzzy - Matches docs containing any or similar search terms
-	regex - Advanced query syntax. Refer https://blevesearch.com/docs/Query-String-Query/`
+	fuzzy - Matches docs containing any one or similar search terms
+	adv - Advanced query syntax. Refer https://blevesearch.com/docs/Query-String-Query/`
 
 type SearchParams struct {
 	// search terms

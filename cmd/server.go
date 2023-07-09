@@ -32,7 +32,7 @@ Endpoints:
 	query params
 	============
 	q: search terms (string)
-	match: can be of type all, any, fuzzy, regex (string)
+	match: can be of type all, any, fuzzy, adv (string)
 	limit: limit of search results (int)`,
 
 	Run: func(cmd *cobra.Command, args []string) {
@@ -117,7 +117,7 @@ func searchAPI(router *gin.Engine) {
 		if params.match == "" {
 			params.match = DefaultMatch
 		}
-		if params.match != "regex" {
+		if params.match != "adv" {
 			params.terms = strings.Split(c.Query("q"), " ")
 		} else {
 			params.terms = []string{c.Query("q")}

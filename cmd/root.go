@@ -110,7 +110,7 @@ func SearchIFSC(q SearchParams) ([][]string, error) {
 	var result [][]string
 	// https://blevesearch.com/docs/Query-String-Query/
 	switch q.match {
-	case "regex":
+	case "adv":
 		r, e := search(bleve.NewQueryStringQuery(q.terms[0]), q)
 		if e != nil {
 			return result, e
