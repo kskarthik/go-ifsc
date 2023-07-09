@@ -39,7 +39,7 @@ curl -s http://insomnia247.nl:5100/YESB0DNB002 | jq
 Search for banks in an area
 
 ```sh
-curl -s http://insomnia247.nl:5100/search?q=hitech+city
+curl -s http://insomnia247.nl:5100/search?q=hitech city
 
 [{"BANK":"Bandhan Bank","IFSC":"BDBL0002291","BRANCH":"KAVURI HILLS BRANCH HYDERABAD","CENTRE":"HYDERABAD","DISTRICT":"HYDERABAD","STATE":"TELANGANA","ADDRESS":"2-44 2,MADHAPUR PRIDE,GUTTALA BEGUMPET,MADHAPUR,HITECH CITY MAIN ROAD,GROUND FLOOR,MADHAPUR POLICE STATION -500081,TELANGANA","CONTACT":"+913366090909","IMPS":true,"RTGS":true,"CITY":"HYDERABAD","ISO3166":"IN-TG","NEFT":true,"MICR":"500750012","UPI":true,"SWIFT":null},{"BANK":"Central Bank of India","IFSC":"CBIN0283164","BRANCH":"HITECH AGRICULTURAL FINANCE BRANCH","CENTRE":"BHOPAL","DISTRICT":"BHOPAL","STATE":"MADHYA PRADESH","ADDRESS":"9, ARERA HILL, JAIL ROAD, BHOPAL, DIST- BHOPAL, MADHYA PRADESH-462011","CONTACT":"+912222612008","IMPS":true,"RTGS":true,"CITY":"BHOPAL","ISO3166":"IN-MP","NEFT":true,"MICR":"462016022","UPI":true,"SWIFT":null}]
 ```
@@ -47,7 +47,7 @@ curl -s http://insomnia247.nl:5100/search?q=hitech+city
 Search for all axis banks in a state, Eg: Goa
 
 ```sh
-curl -s http://insomnia247.nl:5100/search?q=axis+in-ga
+curl -s http://insomnia247.nl:5100/search?q=axis in-ga
 
 [{"BANK":"Axis Bank","IFSC":"UTIB0003418","BRANCH":"GOGOL","CENTRE":"SOUTH","DISTRICT":"SOUTH","STATE":"GOA","ADDRESS":"SHOP NO 12345 AR MANSION GOGOL","CONTACT":"+918326570622","IMPS":true,"RTGS":true,"CITY":"MARGAO","ISO3166":"IN-GA","NEFT":true,"MICR":"403211014","UPI":true,"SWIFT":null}]
 ```
@@ -126,11 +126,15 @@ DISTRICT	RAJAHMUNDRY
 
 ```bash
 $ ifsc search -m all axis karol bagh
-
-| IFSC | BANK | CITY | STATE | ADDRESS |
-| --- | --- | --- | --- | --- |
-| UTIB0000223 | Axis Bank | DELHI | DELHI | 6/83,PADAM SINGH RD,WESTERN EXTN AREA  KAROL BAGH, WEST DELHI |
-| UTIB0SIPSB2 | Axis Bank | DELHI | DELHI | 794 JOSHI ROAD KAROL  BAGH NEW DELHI-110005 |
++-------------+-----------+-------+-------+---------------------------+
+| IFSC        | BANK      | CITY  | STATE | ADDRESS                   |
++-------------+-----------+-------+-------+---------------------------+
+| UTIB0000223 | Axis Bank | DELHI | DELHI | 6/83,PADAM SINGH RD,WESTE |
+|             |           |       |       | RN EXTN AREA  KAROL BAGH, |
+|             |           |       |       |  WEST DELHI               |
+| UTIB0SIPSB2 | Axis Bank | DELHI | DELHI | 794 JOSHI ROAD KAROL  BAG |
+|             |           |       |       | H NEW DELHI-110005        |
++-------------+-----------+-------+-------+---------------------------+
 ```
 
 # Build From Source 🛠️
