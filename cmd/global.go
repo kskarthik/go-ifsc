@@ -14,7 +14,7 @@ import (
 // this var stores the location of the bleve's index directory
 var IndexDir string
 
-var AppVersion string = "0.2.0"
+var AppVersion string = "0.2.1"
 
 // the columns of the csv
 var Fields = []string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
