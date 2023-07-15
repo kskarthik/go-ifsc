@@ -97,8 +97,9 @@ func CheckIFSC(code string) ([]string, error) {
 
 // prepares the search query based on the params
 func SearchIFSC(q SearchParams) ([][]string, error) {
-	// convert the query terms based on the matching option to bleve query type
+
 	bq := []query.Query{}
+	// convert the query terms based on the matching option to bleve query type
 	for _, term := range q.terms {
 		if q.match == "fuzzy" {
 			bq = append(bq, bleve.NewFuzzyQuery(term))
@@ -107,9 +108,11 @@ func SearchIFSC(q SearchParams) ([][]string, error) {
 		}
 
 	}
+
 	var result [][]string
-	// https://blevesearch.com/docs/Query-String-Query/
+
 	switch q.match {
+	// https://blevesearch.com/docs/Query-String-Query/
 	case "adv":
 		r, e := search(bleve.NewQueryStringQuery(q.terms[0]), q)
 		if e != nil {

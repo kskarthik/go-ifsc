@@ -28,14 +28,14 @@ const DefaultSearchLimit int = 20
 // default text matching pattern
 const DefaultMatch = "any"
 
-const SearchHelp string = `Text matching type:
+const SearchHelp string = `Text matching options:
 	all - Matches docs containing all search terms
 	any - Matches docs containing any one of the search terms
 	fuzzy - Matches docs containing any one or similar search terms
 	adv - Advanced query syntax. Refer https://blevesearch.com/docs/Query-String-Query/`
 
 type SearchParams struct {
-	// search terms
+	// search terms provided by the user
 	terms []string
 	// text matching pattern
 	match string
@@ -87,16 +87,17 @@ func PrintResult(record []string) {
 
 	for i := range record {
 
-		var value string = record[i]
-		if record[i] == "true" {
+		value := record[i]
+
+		switch value {
+		case "true":
 			value = "yes"
-		}
-		if record[i] == "false" {
+		case "false":
 			value = "no"
-		}
-		if record[i] == "" {
+		case "":
 			value = "N/A"
 		}
+
 		fmt.Printf("%8s\t%s\n", Fields[i], value)
 	}
 }

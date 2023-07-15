@@ -66,8 +66,6 @@ All binaries are built on gitlab ci for every release. You can download the late
 
 ## Docker
 
-The docker image is built for each commit & uploaded to docker hub
-
 Docker hub: https://hub.docker.com/r/kskarthik/ifsc
 
 ```sh
@@ -124,6 +122,8 @@ DISTRICT	RAJAHMUNDRY
 
 ### Search for banks
 
+Match documents which satisfy all search terms
+
 ```bash
 $ ifsc search -m all axis karol bagh
 +-------------+-----------+-------+-------+---------------------------+
@@ -136,6 +136,8 @@ $ ifsc search -m all axis karol bagh
 |             |           |       |       | H NEW DELHI-110005        |
 +-------------+-----------+-------+-------+---------------------------+
 ```
+
+For more search options refer `ifsc search --help`
 
 # Build From Source 🛠️
 
