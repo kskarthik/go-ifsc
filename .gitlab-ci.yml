@@ -12,6 +12,7 @@ ifsc:
   stage: build
   script:
     - sh build.sh
+    - cp openapi.yaml public/
   artifacts:
     paths:
       - public
