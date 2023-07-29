@@ -2,7 +2,7 @@ openapi: 3.0.3
 
 info:
   title: go-ifsc
-  description: API documentation
+  description: API documentation for go-ifsc. A CLI / REST API server for searching details about Indian banks
   license:
     name: AGPLv3
     url: https://www.gnu.org/licenses/agpl-3.0.en.html
@@ -44,7 +44,7 @@ components:
           type: string
         ISO3166:
           type: string
-        NEFT: 
+        NEFT:
           type: boolean
         MICR:
           type: string
@@ -58,7 +58,7 @@ paths:
     get:
       summary: Application Status
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
@@ -78,13 +78,13 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ifsc-object'
-        '404':
+                $ref: "#/components/schemas/ifsc-object"
+        "404":
           description: IFSC Code not found
   /search:
     get:
@@ -109,21 +109,21 @@ paths:
             type: integer
             default: 20
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ifsc-object'
-        '400':
+                  $ref: "#/components/schemas/ifsc-object"
+        "400":
           description: Incorrect query parameters
   /fields:
     get:
       summary: Returns fields of a bank
       responses:
-        '200':
+        "200":
           description: Successful operation
           content:
             application/json:
