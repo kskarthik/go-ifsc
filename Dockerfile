@@ -4,21 +4,16 @@ RUN mkdir /ifsc/
 
 COPY . /ifsc/
 
-RUN cd /ifsc/ &&\
-		sh build.sh
+RUN cd /ifsc/ && sh build.sh
 
 FROM alpine:latest
 
-# create a non-root user to run the app
-RUN adduser --disabled-password ifsc-usr
-
-# switch to non-root user
-USER ifsc-usr
-
 COPY --from=build /ifsc/public/linux/* /usr/local/bin/
 
-# index the latest ifsc data
-RUN ifsc index
+# create a non-root user to run the app & index the data
+RUN adduser --disabled-password ifsc-usr && ifsc index
+
+USER ifsc-usr
 
 ENTRYPOINT [ "ifsc", "server" ]
 
