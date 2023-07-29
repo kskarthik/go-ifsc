@@ -11,7 +11,10 @@ FROM alpine:latest
 COPY --from=build /ifsc/public/linux/* /usr/local/bin/
 
 # create a non-root user to run the app & index the data
-RUN adduser --disabled-password ifsc-usr && ifsc index
+RUN adduser --disabled-password ifsc-usr
+
+# index the data
+RUN ifsc index
 
 USER ifsc-usr
 
