@@ -74,6 +74,8 @@ func ifscStruct(r []string) Body {
 // start the REST api server & handle the config & incoming requests
 func startServer() {
 	router := gin.Default()
+	hello(router)
+	fields(router)
 	checkAPI(router)
 	searchAPI(router)
 	fmt.Printf("Starting server on http://0.0.0.0:%s\nPress Ctrl+C to stop\n", hostPort)
@@ -81,21 +83,44 @@ func startServer() {
 	router.Run(":" + hostPort)
 }
 
+// returns bank fields
+func fields(router *gin.Engine) {
+
+	router.GET("/fields", func(c *gin.Context) {
+		c.JSON(http.StatusOK, Fields)
+	})
+	return
+}
+
+// returns app version
+func hello(router *gin.Engine) {
+
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, map[string]string{"version": AppVersion})
+	})
+	return
+}
+
 // validate IFSC code, Throw 404 if invalid
 func checkAPI(router *gin.Engine) {
 
 	router.GET("/:ifsc", func(c *gin.Context) {
-		name := c.Param("ifsc")
-		if len(name) != 11 {
+
+		ifscCode := c.Param("ifsc")
+
+		if len(ifscCode) != 11 {
 			c.Status(http.StatusNotFound)
-		}
-		res, e := CheckIFSC(name)
-		if e != nil {
-			c.Status(http.StatusNotFound)
+			return
 		} else {
-			c.JSON(http.StatusOK, ifscStruct(res))
+			res, e := CheckIFSC(ifscCode)
+			if e != nil {
+				c.Status(http.StatusNotFound)
+			} else {
+				c.JSON(http.StatusOK, ifscStruct(res))
+			}
 		}
 	})
+	return
 }
 
 // search for banks
@@ -131,6 +156,7 @@ func searchAPI(router *gin.Engine) {
 		res, e := SearchIFSC(params)
 		if e != nil {
 			statusCode = http.StatusBadRequest
+			return
 		} else {
 			// loop over the elements of the slice
 			for i := range res {
@@ -141,6 +167,7 @@ func searchAPI(router *gin.Engine) {
 		}
 		c.JSON(statusCode, response)
 	})
+	return
 }
 
 func init() {
