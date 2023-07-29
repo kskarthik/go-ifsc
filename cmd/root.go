@@ -80,7 +80,7 @@ func CheckIFSC(code string) ([]string, error) {
 	}
 	defer index.Close()
 
-	var e error = errors.New("Record not found")
+	recordNotFound := errors.New("Record not found")
 	// define a new query
 	query := bleve.NewMatchQuery(strings.TrimSpace(code))
 	searchRequest := bleve.NewSearchRequest(query)
@@ -89,7 +89,7 @@ func CheckIFSC(code string) ([]string, error) {
 	result, _ := index.Search(searchRequest)
 	// handle the case of no matching
 	if result.Hits.Len() == 0 {
-		return []string{}, e
+		return []string{}, recordNotFound
 	} else {
 		return ConvertToSlice(result.Hits[0].Fields), nil
 	}

@@ -55,7 +55,7 @@ func httpGet(url string) []byte {
 // get the latest ifsc release info
 func getIFSCRelease() {
 
-	fmt.Println("Checking for the latest IFSC release from https://github.com/razorpay/ifsc/releases")
+	fmt.Println("Looking up latest IFSC release from https://github.com/razorpay/ifsc/releases")
 
 	b := httpGet("https://api.github.com/repos/razorpay/ifsc/releases?per_page=1")
 
@@ -66,7 +66,7 @@ func getIFSCRelease() {
 		os.Exit(1)
 	}
 	v := body[0]["name"]
-	fmt.Println("Downloading the IFSC.csv", v)
+	fmt.Println("Downloading IFSC.csv", v)
 	url := fmt.Sprintf("https://github.com/razorpay/ifsc/releases/download/%s/IFSC.csv", v)
 	res := httpGet(url)
 	indexCSV(res)

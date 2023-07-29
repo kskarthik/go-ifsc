@@ -117,11 +117,13 @@ func searchAPI(router *gin.Engine) {
 		if params.match == "" {
 			params.match = DefaultMatch
 		}
+		// handle advanced search query
 		if params.match != "adv" {
 			params.terms = strings.Split(c.Query("q"), " ")
 		} else {
 			params.terms = []string{c.Query("q")}
 		}
+
 		var statusCode int
 
 		response := []Body{}
