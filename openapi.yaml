@@ -13,7 +13,7 @@ externalDocs:
   url: https://gitlab.com/kskarthik/go-ifsc
 
 servers:
-  - url: http://insomnia247.nl:5100
+  - url: https://ifsc.kskarthik.insomnia247.nl
 
 components:
   schemas:
