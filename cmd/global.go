@@ -19,6 +19,9 @@ var AppVersion string = "0.3.1"
 // the columns of the csv
 var Fields = []string{"BANK", "IFSC", "BRANCH", "CENTRE", "DISTRICT", "STATE", "ADDRESS", "CONTACT", "IMPS", "RTGS", "CITY", "ISO3166", "NEFT", "MICR", "UPI", "SWIFT"}
 
+// default columns appearing during CLI search
+var DefaultColumns []string = []string{"BANK", "BRANCH", "ADDRESS", "IFSC"}
+
 // debug or release mode for the rest api server
 var ServerMode string
 

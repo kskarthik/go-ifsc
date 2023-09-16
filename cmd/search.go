@@ -9,10 +9,14 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 	"os"
+	"strings"
 )
 
 var params SearchParams
 var output string
+var columns []string
+
+var columnHelp string = fmt.Sprintf("Customize the table columns. Available Columns: %s", strings.Join(Fields, ", "))
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
@@ -34,25 +38,36 @@ var searchCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		if len(searchResults) > 0 {
-			PrintTable(searchResults)
+			columnIndexes := columnMap(columns)
+			PrintTable(searchResults, columnIndexes)
 		}
 	},
 }
 
+// parse column names from cli and
+// map them to corresponding index
+func columnMap(v []string) (i []int) {
+
+	// range over user defined columns
+	for _, userColumn := range v {
+		// range over all columns & check if user defined column name exists
+		// if found, append the index & name to result
+		for index, columnName := range Fields {
+			if userColumn == columnName {
+				i = append(i, index)
+			}
+		}
+	}
+	return
+}
+
 // print the result as cli table
-func PrintTable(v [][]string) {
+func PrintTable(v [][]string, col []int) {
 
 	t := table.NewWriter()
+
 	t.SetOutputMirror(os.Stdout)
-	t.AppendHeader(table.Row{"IFSC", "BANK", "CITY", "STATE", "ADDRESS"})
-	// show result count in footer
-	if len(v) > 3 {
-		t.AppendFooter(table.Row{" ", " ", "", "", fmt.Sprintf("total: %v", len(v))})
-	}
-	for _, csv := range v {
-		row := table.Row{csv[1], csv[0], csv[10], csv[5], csv[6]}
-		t.AppendRow(row)
-	}
+
 	// config of columns
 	t.SetColumnConfigs([]table.ColumnConfig{
 		{
@@ -61,13 +76,39 @@ func PrintTable(v [][]string) {
 		},
 		{
 			Name:     "BANK",
-			WidthMax: 15,
+			WidthMax: 18,
 		},
 		{
 			Name:     "CITY",
 			WidthMax: 15,
 		},
+
+		{
+			Name:     "BRANCH",
+			WidthMax: 15,
+		},
 	})
+	// set table headers
+	var tableRows table.Row
+	// loop over all user provided colums- and set the table column names
+	for _, val := range columns {
+		tableRows = append(tableRows, val)
+	}
+
+	t.AppendHeader(tableRows)
+
+	// for each search result, filter the user selected fields
+	for _, csv := range v {
+		// create a temporary row
+		var tmpRow table.Row
+		// loop over all user defined table column indexes and
+		// append the result to a temporary row
+		for _, i := range col {
+			tmpRow = append(tmpRow, csv[i])
+		}
+		t.AppendRow(tmpRow)
+	}
+
 	// render the output format
 	switch output {
 	case "html":
@@ -81,11 +122,15 @@ func PrintTable(v [][]string) {
 		t.Render()
 	}
 }
+
 func init() {
 	rootCmd.AddCommand(searchCmd)
-	// flags
+	// initialize flags
 	searchCmd.Flags().StringVarP(&params.match, "match", "m", DefaultMatch, SearchHelp)
 	// search count limit
 	searchCmd.Flags().IntVarP(&params.limit, "limit", "l", DefaultSearchLimit, "Limit the number of search results")
+	// table output
 	searchCmd.Flags().StringVarP(&output, "output", "o", "ascii", "specify output format, Available formats: html, md, csv")
+	// table columns
+	searchCmd.Flags().StringSliceVarP(&columns, "columns", "c", DefaultColumns, columnHelp)
 }
