@@ -2,6 +2,7 @@ image: golang:1.19-buster
 
 stages:
   - build
+  - test
   - deploy
 
 services:
@@ -21,6 +22,17 @@ ifsc:
       - Dockerfile
       - cmd/**/*.go
       - ./*.{sh,go}
+
+# check whether all cli commands are working
+cli_tests:
+  stage: test
+  script:
+    - cd public/linux
+    - chmod +x ifsc
+    - ./ifsc index
+    - ./ifsc check KARB0000001
+    - ./ifsc search axis karol
+    - ./ifsc server &
 
 # build the docker image & push to the dockerhub
 docker:
