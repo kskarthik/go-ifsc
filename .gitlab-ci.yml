@@ -24,15 +24,19 @@ ifsc:
       - ./*.{sh,go}
 
 # check whether all cli commands are working
-cli_tests:
+cli_api_tests:
   stage: test
   script:
+    - apk add curl
     - cd public/linux
     - chmod +x ifsc
     - ./ifsc index
     - ./ifsc check KARB0000001
     - ./ifsc search axis karol
+    # test server
     - ./ifsc server &
+    - curl -f http://localhost:9000/HDFC0CAGSBK
+    - curl -f http://localhost:9000/search?q=hitech%20city
 
 # build the docker image & push to the dockerhub
 docker:
