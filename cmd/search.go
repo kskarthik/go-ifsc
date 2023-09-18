@@ -97,7 +97,7 @@ func PrintTable(v [][]string, col []int) {
 
 	t.AppendHeader(tableRows)
 
-	// for each search result, filter the user selected fields
+	// for each search result, filter out the user selected fields
 	for _, csv := range v {
 		// create a temporary row
 		var tmpRow table.Row
