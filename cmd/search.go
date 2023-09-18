@@ -126,11 +126,12 @@ func PrintTable(v [][]string, col []int) {
 func init() {
 	rootCmd.AddCommand(searchCmd)
 	// initialize flags
+	// matching pattern
 	searchCmd.Flags().StringVarP(&params.match, "match", "m", DefaultMatch, SearchHelp)
 	// search count limit
 	searchCmd.Flags().IntVarP(&params.limit, "limit", "l", DefaultSearchLimit, "Limit the number of search results")
 	// table output
 	searchCmd.Flags().StringVarP(&output, "output", "o", "ascii", "specify output format, Available formats: html, md, csv")
-	// table columns
+	// customize table columns
 	searchCmd.Flags().StringSliceVarP(&columns, "columns", "c", DefaultColumns, columnHelp)
 }
