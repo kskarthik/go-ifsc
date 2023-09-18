@@ -21,13 +21,13 @@ ifsc:
     changes:
       - Dockerfile
       - cmd/**/*.go
-      - ./*.{sh,go}
+      - ./*.{sh,go,yml}
 
 # check whether all cli commands are working
 cli_api_tests:
   stage: test
   script:
-    - apk add curl
+    - apt update && apt install -y curl
     - cd public/linux
     - chmod +x ifsc
     - ./ifsc index
