@@ -97,7 +97,23 @@ $ ifsc search -m all axis karol bagh
 +-------------+-----------+-------+-------+---------------------------+
 ```
 
-For more search options refer `ifsc search --help`
+### Customize Columns
+
+```bash
+go run . search axis karol --limit 2 --columns 'BANK,ADDRESS,CONTACT'
++-----------+---------------------------+---------------+
+| BANK      | ADDRESS                   | CONTACT       |
++-----------+---------------------------+---------------+
+| Axis Bank | 6/83,PADAM SINGH RD,WESTE | +919582802231 |
+|           | RN EXTN AREA  KAROL BAGH, |               |
+|           |  WEST DELHI               |               |
+| Axis Bank | 794 JOSHI ROAD KAROL  BAG | +919810840772 |
+|           | H NEW DELHI-110005        |               |
++-----------+---------------------------+---------------+
+
+```
+
+> For more search options refer `ifsc search --help`
 
 # Build From Source 🛠️
 
@@ -113,18 +129,13 @@ cd go-ifsc/
 bash build.sh
 ```
 
-# License ⚖️
+# License ⚖️
 
 All the code is licensed under `GPLv3` & server code is `AGPLv3` license
-
-# TODO 📝
-
-- [x] Provide a REST API for search & validation
-- [x] handle the search command param properly
-- [x] Improve the check & search logic
 
 # Credits 🤝
 
 - [Razorpay IFSC](https://github.com/razorpay/ifsc/releases) repository for the csv dump
 - [Bleve](https://pkg.go.dev/github.com/blevesearch/bleve/v2) search library
 - [Cobra](https://github.com/spf13/cobra) CLI library
+- Many thanks to [Dhruvin](https://dhruvin.dev/) for his suggestions in the design aspects
