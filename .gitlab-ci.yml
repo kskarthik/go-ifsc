@@ -9,7 +9,7 @@ services:
   - docker:20.10.19-dind
 
 # build the ifsc binary
-ifsc:
+build ifsc:
   stage: build
   script:
     - sh build.sh
@@ -24,8 +24,10 @@ ifsc:
       - ./*.{sh,go,yml}
 
 # check whether all cli commands are working
-cli_api_tests:
+cli api tests:
   stage: test
+  dependencies:
+    - build ifsc
   script:
     - apt update && apt install -y curl
     - cd public/linux
@@ -33,13 +35,13 @@ cli_api_tests:
     - ./ifsc index
     - ./ifsc check KARB0000001
     - ./ifsc search axis karol
-    # test server
+    # REST API tests
     - ./ifsc server &
     - curl -f http://localhost:9000/HDFC0CAGSBK
     - curl -f http://localhost:9000/search?q=hitech%20city
 
 # build the docker image & push to the dockerhub
-docker:
+docker image:
   image: docker:20.10.19
   stage: deploy
   script:
