@@ -9,7 +9,7 @@ services:
   - docker:20.10.19-dind
 
 # build the ifsc binary
-build ifsc:
+build_ifsc:
   stage: build
   script:
     - sh build.sh
@@ -24,10 +24,9 @@ build ifsc:
       - ./*.{sh,go,yml}
 
 # check whether all cli commands are working
-cli api tests:
+cli_api_tests:
   stage: test
-  dependencies:
-    - build ifsc
+  needs: ["build_ifsc"]
   script:
     - apt update && apt install -y curl
     - cd public/linux
