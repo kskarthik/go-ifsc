@@ -20,12 +20,15 @@ import (
 var indexCmd = &cobra.Command{
 	Use:   "index",
 	Short: "Index IFSC data",
-	Long: `Indexes the IFSC data locally
+	Long: `Index the IFSC data locally
 
-	Download the latest IFSC csv & store in cache.
-	This command should be invoked before launching the ifsc command for the first time
-	or to update to latest IFSC dataset with upstream releases
-	`,
+	Downloads the latest IFSC csv dump & store in the system cache.
+	This command should be invoked in two scenarios:
+
+		1. During first setup
+		2. When there is an upstream release of new IFSC dataset
+
+	If XDG_CACHE_HOME env is set, it will be used.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		getIFSCRelease()
 	},
@@ -42,6 +45,7 @@ func httpGet(url string) []byte {
 		os.Exit(1)
 	}
 	defer response.Body.Close()
+
 	if response.StatusCode == 200 {
 		b, _ := io.ReadAll(response.Body)
 		if err != nil {
@@ -89,8 +93,9 @@ func indexCSV(v []byte) {
 		fmt.Println(newIndexErr)
 		os.Exit(1)
 	}
-	fmt.Printf("Indexing the csv data in %s This may take a few minutes\n", IndexDir)
-	// invoke batch indexing https://github.com/blevesearch/bleve/discussions/1834#discussioncomment-6280490
+	fmt.Printf("Indexing the data in '%s' This might take a few minutes\n", IndexDir)
+
+	// invoke bleve's batch indexing https://github.com/blevesearch/bleve/discussions/1834#discussioncomment-6280490
 	batch := index.NewBatch()
 
 	for i := range csvSlice[1:] {
@@ -99,6 +104,7 @@ func indexCSV(v []byte) {
 	}
 	// append the created batch to index
 	indexingErr := index.Batch(batch)
+
 	if indexingErr != nil {
 		fmt.Println(indexingErr)
 		os.Exit(1)
