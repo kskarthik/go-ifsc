@@ -6,6 +6,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/cobra"
 	"net/http"
@@ -71,14 +72,19 @@ func ifscStruct(r []string) Body {
 	return b
 }
 
-// start the REST api server & handle the config & incoming requests
+// start the REST api server, handle the config & incoming requests
 func startServer() {
 	router := gin.Default()
 	hello(router)
 	fields(router)
 	checkAPI(router)
 	searchAPI(router)
+	// use defaults of cors package
+	// https://github.com/gin-contrib/cors#default-allows-all-origins
+	router.Use(cors.Default())
+
 	fmt.Printf("Starting server on http://0.0.0.0:%s\nPress Ctrl+C to stop\n", hostPort)
+
 	// start the server
 	router.Run(":" + hostPort)
 }
