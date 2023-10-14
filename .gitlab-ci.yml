@@ -52,7 +52,7 @@ docker image:
   only:
     - tags
 
-# deploy to gitlab pages
+# deploy the build_ifsc job artifcats gitlab pages when there is a release
 pages:
   stage: deploy
   script:
