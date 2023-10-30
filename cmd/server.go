@@ -75,13 +75,18 @@ func ifscStruct(r []string) Body {
 // start the REST api server, handle the config & incoming requests
 func startServer() {
 	router := gin.Default()
+
+	// use defaults of cors package
+	// https://github.com/gin-contrib/cors#using-defaultconfig-as-start-point
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowMethods = []string{"GET"}
+	router.Use(cors.New(config))
+
 	hello(router)
 	fields(router)
 	checkAPI(router)
 	searchAPI(router)
-	// use defaults of cors package
-	// https://github.com/gin-contrib/cors#default-allows-all-origins
-	router.Use(cors.Default())
 
 	fmt.Printf("Starting server on http://0.0.0.0:%s\nPress Ctrl+C to stop\n", hostPort)
 
