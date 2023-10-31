@@ -55,8 +55,15 @@ docker image:
 # deploy the build_ifsc job artifcats gitlab pages when there is a release
 pages:
   stage: deploy
+  variables:
+    swagger_version: 5.9.1
   script:
     - ls public/
+    # download swagger ui & mv to public dir
+    - wget https://github.com/swagger-api/swagger-ui/archive/refs/tags/v$swagger_version.tar.gz
+    - tar -xf v$swagger_version.tar.gz
+    - mv swagger-ui-$swagger_version/dist public/
+    - mv swagger-initializer.js public/
   artifacts:
     paths:
       - public
