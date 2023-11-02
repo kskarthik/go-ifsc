@@ -38,9 +38,14 @@ cli_api_tests:
     - ./ifsc server &
     - curl -f http://localhost:9000/HDFC0CAGSBK
     - curl -f http://localhost:9000/search?q=hitech%20city
+  only:
+    changes:
+      - Dockerfile
+      - cmd/**/*.go
+      - ./*.{sh,go,yml}
 
 # build the docker image & push to the dockerhub
-docker image:
+docker_image:
   image: docker:20.10.19
   stage: deploy
   script:
