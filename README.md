@@ -1,6 +1,6 @@
 # go-ifsc 🚀
 
-Search IFSC codes of all Indian banks from the comfort of your terminal 🤓💪
+Search all the Indian banks info from the comfort of your terminal 🤓💪
 
 # Features
 
@@ -8,11 +8,11 @@ Search IFSC codes of all Indian banks from the comfort of your terminal 🤓💪
 - ⚡Includes a REST API server 💥
 - ⚡Single binary
 - ⚡Works Offline
-- ⚡Search functionality
+- ⚡Search & validation
 
 # Download
 
-All binaries are built on gitlab ci for every release. You can download the latest release from the links below
+All binaries are built on gitlab ci for every release. You can download the latest release binary from the respective links below:
 
 - 🐧 [Linux (x64)](https://kskarthik.gitlab.io/go-ifsc/linux/ifsc)
 - 🪟 [Windows (x64)](https://kskarthik.gitlab.io/go-ifsc/win/ifsc.exe)
