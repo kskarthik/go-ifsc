@@ -23,22 +23,6 @@ build_ifsc:
       - cmd/**/*.go
       - ./*.{sh,go,yml}
 
-# download swagger ui & mv to public dir
-swagger:
-  image: busybox:latest
-  variables:
-    swagger_version: 5.9.1
-  stage: build
-  script:
-    - if test -d public/; then \
-      echo "Directory exists" \
-      else \
-      mkdir public/; fi
-    - wget https://github.com/swagger-api/swagger-ui/archive/refs/tags/v$swagger_version.tar.gz
-    - tar -xf v$swagger_version.tar.gz
-    - mv swagger-ui-$swagger_version/dist public/
-    - mv swagger-initializer.js public/
-
 # check whether all cli commands are working
 cli_api_tests:
   stage: test
@@ -76,10 +60,18 @@ docker_image:
 # deploy the build_ifsc job artifcats gitlab pages when there is a release
 pages:
   stage: deploy
+  image: busybox:latest
+  variables:
+    swagger_version: 5.9.1
+  stage: build
   script:
-    - ls public/
+    # download swagger ui & mv to public dir
+    - wget https://github.com/swagger-api/swagger-ui/archive/refs/tags/v$swagger_version.tar.gz
+    - tar -xf v$swagger_version.tar.gz
+    - mv swagger-ui-$swagger_version/dist public/
+    - mv swagger-initializer.js public/
   artifacts:
     paths:
       - public
-  # only:
-  #   - tags
+  only:
+    - tags
