@@ -63,7 +63,6 @@ pages:
   image: busybox:latest
   variables:
     swagger_version: 5.9.1
-  stage: build
   script:
     # download swagger ui & mv to public dir
     - wget https://github.com/swagger-api/swagger-ui/archive/refs/tags/v$swagger_version.tar.gz
