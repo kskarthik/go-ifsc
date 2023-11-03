@@ -72,5 +72,5 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - tags
+  # only:
+  #   - tags
