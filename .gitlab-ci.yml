@@ -67,7 +67,7 @@ pages:
     # download swagger ui & mv to public dir
     - wget https://github.com/swagger-api/swagger-ui/archive/refs/tags/v$swagger_version.tar.gz
     - tar -xf v$swagger_version.tar.gz
-    - mv swagger-ui-$swagger_version/dist public/
+    - mv swagger-ui-$swagger_version/dist/* public/
     - mv swagger-initializer.js public/
   artifacts:
     paths:
