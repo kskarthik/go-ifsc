@@ -51,7 +51,7 @@ chmod +x ifsc
 
 # API Reference 📡
 
-OpenAPI: [Swagger UI](https://gitlab.com/kskarthik/go-ifsc/-/blob/master/openapi.yaml?ref_type=heads)
+REST API is documented using swagger. See [Swagger UI](https://kskarthik.gitlab.io/go-ifsc)
 
 # CLI Examples 😍
 
