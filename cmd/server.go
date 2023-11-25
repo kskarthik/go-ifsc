@@ -37,6 +37,8 @@ Endpoints:
 	limit: limit of search results (int)`,
 
 	Run: func(cmd *cobra.Command, args []string) {
+
+		IndexDirExists()
 		// server mode
 		gin.SetMode(ServerMode)
 		startServer()
@@ -131,7 +133,6 @@ func checkAPI(router *gin.Engine) {
 			}
 		}
 	})
-	return
 }
 
 // search for banks
@@ -164,7 +165,7 @@ func searchAPI(router *gin.Engine) {
 
 		response := []Body{}
 		// perform the search
-		res, e := SearchIFSC(params)
+		res, e := params.SearchBanks()
 		if e != nil {
 			statusCode = http.StatusBadRequest
 			return
