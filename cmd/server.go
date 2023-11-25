@@ -37,8 +37,6 @@ Endpoints:
 	limit: limit of search results (int)`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-
-		IndexDirExists()
 		// server mode
 		gin.SetMode(ServerMode)
 		startServer()
