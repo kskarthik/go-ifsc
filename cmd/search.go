@@ -21,8 +21,8 @@ var columnHelp string = fmt.Sprintf("Customize the table columns. Available Colu
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
 	Use:   "search",
-	Short: "Search for banks / IFSC codes",
-	Long: `Search for banks / IFSC codes
+	Short: "Search for banks",
+	Long: `Search for banks
 
 	The search term can be anything: bank address, name, phone number, city etc...`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -32,7 +32,7 @@ var searchCmd = &cobra.Command{
 		}
 		params.terms = args
 		// print the search results if there are any, to stdout
-		searchResults, e := SearchIFSC(params)
+		searchResults, e := params.SearchBanks()
 		if e != nil {
 			fmt.Println(e)
 			os.Exit(1)

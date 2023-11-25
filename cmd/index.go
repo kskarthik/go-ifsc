@@ -19,7 +19,7 @@ import (
 // indexCmd represents the index command
 var indexCmd = &cobra.Command{
 	Use:   "index",
-	Short: "Index IFSC data",
+	Short: "Index the IFSC data locally",
 	Long: `Index the IFSC data locally
 
 	Downloads the latest IFSC csv dump & store in the system cache.

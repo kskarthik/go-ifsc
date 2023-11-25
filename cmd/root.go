@@ -32,9 +32,10 @@ func Execute() {
 	if err != nil {
 		os.Exit(1)
 	}
+	locateCacheDir()
 }
 
-func init() {
+/* func init() {
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
@@ -45,12 +46,11 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	locateIndexDir()
-}
+} */
 
 // locate user's cache dir.
-// Respect the XDG env, if set
-func locateIndexDir() {
+// Respect the `XDG_CACHE_HOME` env, if set
+func locateCacheDir() {
 
 	dirName := "/ifsc"
 
@@ -69,15 +69,25 @@ func locateIndexDir() {
 	}
 }
 
-// checks whether a given IFSC code is valid, retuns a slice
-func CheckIFSC(code string) ([]string, error) {
+// checks if index directory exists
+// if found, returns index.
+// Program exits if not found
+func IndexDirExists() bleve.Index {
 	// open bleve index
 	index, err := bleve.Open(IndexDir)
+	// stop the program in case of an error
 	if err != nil {
-		fmt.Printf("Index does not exist! Create one first\n\n")
+		fmt.Printf("Index does not exist! Create first\n\n")
 		rootCmd.Help()
 		os.Exit(1)
 	}
+	return index
+}
+
+// checks whether a given IFSC code is valid, retuns a slice
+func CheckIFSC(code string) ([]string, error) {
+
+	index := IndexDirExists()
 	defer index.Close()
 
 	recordNotFound := errors.New("Record not found")
@@ -95,8 +105,9 @@ func CheckIFSC(code string) ([]string, error) {
 	}
 }
 
-// prepares the search query based on the params
-func SearchIFSC(q SearchParams) ([][]string, error) {
+// prepares the search query based on the params &
+// performs the search over all the documents
+func (q SearchParams) SearchBanks() ([][]string, error) {
 
 	bq := []query.Query{}
 	// convert the query terms based on the matching option to bleve query type
@@ -106,7 +117,6 @@ func SearchIFSC(q SearchParams) ([][]string, error) {
 		} else {
 			bq = append(bq, bleve.NewMatchQuery(term))
 		}
-
 	}
 
 	var result [][]string
@@ -119,12 +129,14 @@ func SearchIFSC(q SearchParams) ([][]string, error) {
 			return result, e
 		}
 		result = r
+	// search for docs containing all occurances
 	case "all":
 		r, e := search(query.NewConjunctionQuery(bq), q)
 		if e != nil {
 			return result, e
 		}
 		result = r
+	// match documents containing atleast any one of the search term
 	default:
 		r, e := search(query.NewDisjunctionQuery(bq), q)
 		if e != nil {
@@ -135,15 +147,10 @@ func SearchIFSC(q SearchParams) ([][]string, error) {
 	return result, nil
 }
 
-// performs the actual search over the docs
+// access the db & perform the actual search over the docs
 func search(q query.Query, p SearchParams) ([][]string, error) {
 	// open bleve index
-	index, err := bleve.Open(IndexDir)
-	if err != nil {
-		fmt.Printf("Index does not exist! Create one first\n\n")
-		rootCmd.Help()
-		os.Exit(1)
-	}
+	index := IndexDirExists()
 	defer index.Close()
 
 	searchRequest := bleve.NewSearchRequest(q)
