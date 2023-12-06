@@ -2,6 +2,7 @@ openapi: 3.0.3
 
 info:
   title: go-ifsc
+  version: 0.4.2
   description: API documentation for go-ifsc. A CLI / REST API server for searching details about Indian banks
   license:
     name: AGPLv3
