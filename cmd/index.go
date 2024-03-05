@@ -14,6 +14,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 )
 
 // indexCmd represents the index command
@@ -99,8 +100,7 @@ func indexCSV(v []byte) {
 	batch := index.NewBatch()
 
 	for i := range csvSlice[1:] {
-
-		batch.Index(csvSlice[i][1], csvSlice[i])
+		batch.Index(strconv.Itoa(i), csvSlice[i])
 	}
 	// append the created batch to index
 	indexingErr := index.Batch(batch)
